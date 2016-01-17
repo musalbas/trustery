@@ -1,0 +1,3 @@
+*.pyc
+venv
+trustery.egg-info

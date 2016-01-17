@@ -6,6 +6,7 @@ setup(
     packages=['trustery'],
     install_requires=[
         'click',
+        'jsonrpc-requests',
     ],
     entry_points='''
         [console_scripts]

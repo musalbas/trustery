@@ -7,5 +7,5 @@ def cli():
 
 
 @cli.command()
-def rawpublish():
+def addattribute():
     pass

@@ -2,12 +2,16 @@ from pyethereum import abi
 import rlp
 
 from ethapi import TRUSTERY_ABI
+from ethapi import TRUSTERY_ADDRESS
 from ethapi import ethrpc
 
 
 class Transactions(object):
-    def __init__(self, from_address, to_address):
-        self.from_address = from_address
+    def __init__(self, from_address=None, to_address=TRUSTERY_ADDRESS):
+        if from_address is None:
+            self.from_address = ethrpc.eth_accounts()[0]
+        else:
+            self.from_address = from_address
         self.to_address = to_address
 
         self.contract_translator = abi.ContractTranslator(TRUSTERY_ABI)

@@ -13,7 +13,7 @@ class Transactions(object):
         self.contract_translator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _sendTransaction(self, data):
-        ethrpc.eth_sendTransaction({
+        return ethrpc.eth_sendTransaction({
             'from': self.from_address,
             'to': self.to_address,
             'data': '0x' + rlp.utils.encode_hex(data),

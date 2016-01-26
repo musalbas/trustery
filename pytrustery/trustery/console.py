@@ -1,3 +1,5 @@
+import logging
+
 import click
 
 from trustery.transactions import Transactions
@@ -14,7 +16,7 @@ STR = StrParamType()
 
 @click.group()
 def cli():
-    pass
+    logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 @cli.command()
@@ -26,4 +28,6 @@ def cli():
 def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
     transactions = Transactions()
     transactions.addattribute(attributetype, has_proof, identifier, data, datahash)
+
+    click.echo()
     click.echo("Transaction sent.")

@@ -9,7 +9,11 @@ ethrpc = jsonrpc_requests.Server('http://127.0.0.1:8545')
 
 
 def encode_api_data(data):
-    if type(data) in [bool, int]:
+    if data is None:
+        return None
+    elif type(data) == str and data.startswith('0x'):
+        return data
+    elif type(data) in [bool, int]:
         return hex(data)
     else:
         return '0x' + rlp.utils.encode_hex(data)

@@ -1,9 +1,9 @@
 from pyethereum import abi
-import rlp
 
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_ADDRESS
 from ethapi import ethrpc
+from ethapi import encode_api_data
 
 
 class Transactions(object):
@@ -20,7 +20,7 @@ class Transactions(object):
         return ethrpc.eth_sendTransaction({
             'from': self.from_address,
             'to': self.to_address,
-            'data': '0x' + rlp.utils.encode_hex(data),
+            'data': encode_api_data(data),
         })
 
     def addattribute(self, attributetype, has_proof, identifier, data, datahash):

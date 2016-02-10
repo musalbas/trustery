@@ -14,7 +14,7 @@ class Transactions(object):
             self.from_address = from_address
         self.to_address = to_address
 
-        self._contract_translator = abi.ContractTranslator(TRUSTERY_ABI)
+        self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _sendtransaction(self, data):
         return ethrpc.eth_sendTransaction({
@@ -25,5 +25,5 @@ class Transactions(object):
 
     def addattribute(self, attributetype, has_proof, identifier, data, datahash):
         args = [attributetype, has_proof, identifier, data, datahash]
-        data = self._contract_translator.encode('addAttribute', args)
+        data = self._contracttranslator.encode('addAttribute', args)
         return self._sendtransaction(data)

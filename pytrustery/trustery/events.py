@@ -10,16 +10,16 @@ class Events(object):
     def __init__(self, address=TRUSTERY_ADDRESS):
         self.address = address
 
-        self._contract_translator = abi.ContractTranslator(TRUSTERY_ABI)
+        self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
-    def _getlogs(self, topics, eventname=None):
-        if eventname is None:
-            eventtopic = ''
+    def _getlogs(self, topics, event_name=None):
+        if event_name is None:
+            event_topic = ''
         else:
-            eventtopic = '' # TODO implement
+            event_topic = '' # TODO implement
 
         topics = [encode_api_data(topic) for topic in topics]
-        topics = [eventtopic] + topics
+        topics = [event_topic] + topics
 
         return ethrpc.eth_getLogs({
             'fromBlock': 'earliest',

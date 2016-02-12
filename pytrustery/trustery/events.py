@@ -12,7 +12,7 @@ class Events(object):
 
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
-    def _getlogs(self, topics, event_name=None):
+    def _get_logs(self, topics, event_name=None):
         if event_name is None:
             event_topic = ''
         else:
@@ -27,5 +27,5 @@ class Events(object):
             'topics': topics,
         })
 
-    def filterattributes(self, attributeID=None, owner=None, identifier=None):
-        return self._getlogs([attributeID, owner, identifier])
+    def filter_attributes(self, attributeID=None, owner=None, identifier=None):
+        return self._get_logs([attributeID, owner, identifier])

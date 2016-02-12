@@ -16,14 +16,14 @@ class Transactions(object):
 
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
-    def _sendtransaction(self, data):
+    def _send_transaction(self, data):
         return ethrpc.eth_sendTransaction({
             'from': self.from_address,
             'to': self.to_address,
             'data': encode_api_data(data),
         })
 
-    def addattribute(self, attributetype, has_proof, identifier, data, datahash):
+    def add_attribute(self, attributetype, has_proof, identifier, data, datahash):
         args = [attributetype, has_proof, identifier, data, datahash]
         data = self._contracttranslator.encode('addAttribute', args)
-        return self._sendtransaction(data)
+        return self._send_transaction(data)

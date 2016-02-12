@@ -27,7 +27,7 @@ def cli():
 @click.option('--datahash', prompt=True, type=STR)
 def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
     transactions = Transactions()
-    transactions.addattribute(attributetype, has_proof, identifier, data, datahash)
+    transactions.add_attribute(attributetype, has_proof, identifier, data, datahash)
 
     click.echo()
     click.echo("Transaction sent.")

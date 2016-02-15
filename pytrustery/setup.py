@@ -7,7 +7,7 @@ setup(
     install_requires=[
         'click',
         'jsonrpc-requests',
-        'pyethereum',
+        'ethereum',
         'rlp',
     ],
     entry_points='''

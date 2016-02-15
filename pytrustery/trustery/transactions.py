@@ -1,4 +1,4 @@
-from pyethereum import abi
+from ethereum import abi
 
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_ADDRESS

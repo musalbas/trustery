@@ -21,6 +21,7 @@ class Transactions(object):
             'from': self.from_address,
             'to': self.to_address,
             'data': encode_api_data(data),
+            'gas': 2000000, # TODO deal with gas limit more sensibly
         })
 
     def add_attribute(self, attributetype, has_proof, identifier, data, datahash):

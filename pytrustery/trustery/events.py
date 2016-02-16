@@ -1,3 +1,5 @@
+"""API for retrieving Trustery events."""
+
 from ethereum import abi
 from ethereum import processblock
 from ethereum.utils import big_endian_to_int
@@ -10,12 +12,24 @@ from ethapi import encode_api_data
 
 
 class Events(object):
+    """API for retrieving Trustery events."""
     def __init__(self, address=TRUSTERY_DEFAULT_ADDRESS):
+        """
+        Initialise events retriever.
+
+        address: the Ethereum Trustery contract address.
+        """
         self.address = address
 
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _get_logs(self, topics, event_name=None):
+        """
+        Get logs (events).
+
+        topics: a list of topics to search for.
+        event_name: the name of the event.
+        """
         if event_name is None:
             event_topic = ''
         else:
@@ -43,4 +57,11 @@ class Events(object):
         return decoded_logs
 
     def filter_attributes(self, attributeID=None, owner=None, identifier=None):
+        """
+        Filter and retrieve attributes.
+
+        attributeID: the ID of the attribute.
+        owner: the Ethereum address that owns the attributes.
+        identifier: the identifier of the attribute.
+        """
         return self._get_logs([attributeID, owner, identifier])

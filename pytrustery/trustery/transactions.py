@@ -9,7 +9,7 @@ from ethapi import encode_api_data
 class Transactions(object):
     def __init__(self, from_address=None, to_address=TRUSTERY_DEFAULT_ADDRESS):
         if from_address is None:
-            self.from_address = ethrpc.eth_accounts()[0]
+            self.from_address = ethclient.get_accounts()[0]
         else:
             self.from_address = from_address
         self.to_address = to_address
@@ -17,12 +17,12 @@ class Transactions(object):
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _send_transaction(self, data):
-        return ethclient.send_transaction({
-            'from': self.from_address,
-            'to': self.to_address,
-            'data': encode_api_data(data),
-            'gas': 2000000, # TODO deal with gas limit more sensibly
-        })
+        return ethclient.send_transaction(
+            _from=self.from_address,
+            to=self.to_address,
+            data=encode_api_data(data),
+            gas=2000000, # TODO deal with gas limit more sensibly
+        )
 
     def add_attribute(self, attributetype, has_proof, identifier, data, datahash):
         args = [attributetype, has_proof, identifier, data, datahash]

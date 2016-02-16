@@ -24,11 +24,11 @@ class Events(object):
         topics = [encode_api_data(topic) for topic in topics]
         topics = [event_topic] + topics
 
-        logs = ethclient.get_logs({
-            'fromBlock': 'earliest',
-            'address': self.address,
-            'topics': topics,
-        })
+        logs = ethclient.get_logs(
+            from_block='earliest',
+            address=self.address,
+            topics=topics,
+        )
 
         decoded_logs = []
         for log in logs:

@@ -9,6 +9,8 @@ setup(
         'jsonrpc-requests',
         'ethereum',
         'rlp',
+        'configobj',
+        'appdirs',
     ],
     entry_points='''
         [console_scripts]

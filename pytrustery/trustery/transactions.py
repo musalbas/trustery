@@ -18,11 +18,13 @@ class Transactions(object):
         to_address: the Ethereum Trustery contract address.
         """
         if from_address is None:
+            # Use the first Ethereum account address if no from address is specified.
             self.from_address = ethclient.get_accounts()[0]
         else:
             self.from_address = from_address
         self.to_address = to_address
 
+        # Initialise contract ABI.
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _send_transaction(self, data):

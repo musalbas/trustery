@@ -21,6 +21,7 @@ class Events(object):
         """
         self.address = address
 
+        # Initialise contract ABI.
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _get_logs(self, topics, event_name=None):
@@ -30,20 +31,21 @@ class Events(object):
         topics: a list of topics to search for.
         event_name: the name of the event.
         """
-        if event_name is None:
-            event_topic = ''
-        else:
-            event_topic = '' # TODO implement
+        event_topic = '' # TODO implement
 
+        # Encode topics to be sent to the Ethereum client
         topics = [encode_api_data(topic) for topic in topics]
+        # Prepent the event type to the topics.
         topics = [event_topic] + topics
 
+        # Get logs from Ethereum client.
         logs = ethclient.get_logs(
             from_block='earliest',
             address=self.address,
             topics=topics,
         )
 
+        # Decode logs using the contract ABI.
         decoded_logs = []
         for log in logs:
             logobj = processblock.Log(

@@ -4,13 +4,13 @@ from ethereum.utils import big_endian_to_int
 from rlp.utils import decode_hex
 
 from ethapi import TRUSTERY_ABI
-from ethapi import TRUSTERY_ADDRESS
+from ethapi import TRUSTERY_DEFAULT_ADDRESS
 from ethapi import ethrpc
 from ethapi import encode_api_data
 
 
 class Events(object):
-    def __init__(self, address=TRUSTERY_ADDRESS):
+    def __init__(self, address=TRUSTERY_DEFAULT_ADDRESS):
         self.address = address
 
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)

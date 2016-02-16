@@ -4,6 +4,7 @@ setup(
     name='trustery',
     version='0.1',
     packages=['trustery'],
+    package_data={'trustery': ['trustery/trustery_abi.json']},
     install_requires=[
         'click',
         'jsonrpc-requests',

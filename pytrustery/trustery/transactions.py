@@ -1,13 +1,13 @@
 from ethereum import abi
 
 from ethapi import TRUSTERY_ABI
-from ethapi import TRUSTERY_ADDRESS
+from ethapi import TRUSTERY_DEFAULT_ADDRESS
 from ethapi import ethrpc
 from ethapi import encode_api_data
 
 
 class Transactions(object):
-    def __init__(self, from_address=None, to_address=TRUSTERY_ADDRESS):
+    def __init__(self, from_address=None, to_address=TRUSTERY_DEFAULT_ADDRESS):
         if from_address is None:
             self.from_address = ethrpc.eth_accounts()[0]
         else:

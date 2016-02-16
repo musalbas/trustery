@@ -12,6 +12,7 @@ setup(
         'rlp',
         'configobj',
         'appdirs',
+        'ethereum-rpc-client',
     ],
     entry_points='''
         [console_scripts]

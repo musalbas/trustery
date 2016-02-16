@@ -2,7 +2,7 @@ from ethereum import abi
 
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_DEFAULT_ADDRESS
-from ethapi import ethrpc
+from ethapi import ethclient
 from ethapi import encode_api_data
 
 
@@ -17,7 +17,7 @@ class Transactions(object):
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
     def _send_transaction(self, data):
-        return ethrpc.eth_sendTransaction({
+        return ethclient.send_transaction({
             'from': self.from_address,
             'to': self.to_address,
             'data': encode_api_data(data),

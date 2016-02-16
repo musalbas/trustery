@@ -5,7 +5,7 @@ from rlp.utils import decode_hex
 
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_DEFAULT_ADDRESS
-from ethapi import ethrpc
+from ethapi import ethclient
 from ethapi import encode_api_data
 
 
@@ -24,7 +24,7 @@ class Events(object):
         topics = [encode_api_data(topic) for topic in topics]
         topics = [event_topic] + topics
 
-        logs = ethrpc.eth_getLogs({
+        logs = ethclient.get_logs({
             'fromBlock': 'earliest',
             'address': self.address,
             'topics': topics,

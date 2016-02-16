@@ -2,7 +2,7 @@ import json
 import os
 
 import eth_rpc_client
-import rlp
+from rlp.utils import encode_hex
 
 import trustery
 
@@ -20,4 +20,4 @@ def encode_api_data(data):
     elif type(data) in [bool, int]:
         return hex(data)
     else:
-        return '0x' + rlp.utils.encode_hex(data)
+        return '0x' + encode_hex(data)

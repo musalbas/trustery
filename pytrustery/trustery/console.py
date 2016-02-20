@@ -31,9 +31,30 @@ def cli():
 @click.option('--data', prompt=True, type=STR)
 @click.option('--datahash', prompt=True, type=STR)
 def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
-    """(Advanced) Add an attribute about an identity manually."""
+    """(Advanced) Manually add an attribute about your identity."""
     transactions = Transactions()
     transactions.add_attribute(attributetype, has_proof, identifier, data, datahash)
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+@cli.command()
+@click.option('--attributeid', prompt=True, type=STR)
+@click.option('--expiry', prompt=True, type=STR)
+def rawsignattribute(attributeID, expiry):
+    """(Advanced) Manually sign an attribute about an identity."""
+    transactions = Transaction()
+    transactions.sign_attribute(attributeID, expiry)
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+@cli.command()
+@click.option('--signatureid', prompt=True, type=STR)
+def rawrevokeattribute(signatureID):
+    """(Advancd) Manaully revoke your signature about an identity."""
+    tranactions = Transaction()
+    transactions.revoke_signature(signatureID)
 
     click.echo()
     click.echo("Transaction sent.")

@@ -38,6 +38,7 @@ def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
     click.echo()
     click.echo("Transaction sent.")
 
+
 @cli.command()
 @click.option('--attributeid', prompt=True, type=STR)
 @click.option('--expiry', prompt=True, type=STR)
@@ -48,6 +49,7 @@ def rawsignattribute(attributeID, expiry):
 
     click.echo()
     click.echo("Transaction sent.")
+
 
 @cli.command()
 @click.option('--signatureid', prompt=True, type=STR)

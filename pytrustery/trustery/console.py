@@ -52,7 +52,7 @@ def rawsignattribute(attributeID, expiry):
 @cli.command()
 @click.option('--signatureid', prompt=True, type=STR)
 def rawrevokeattribute(signatureID):
-    """(Advancd) Manaully revoke your signature about an identity."""
+    """(Advanced) Manaully revoke your signature about an identity."""
     tranactions = Transaction()
     transactions.revoke_signature(signatureID)
 

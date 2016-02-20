@@ -4,6 +4,7 @@ import logging
 
 import click
 
+from trustery.events import Events
 from trustery.transactions import Transactions
 
 
@@ -60,3 +61,23 @@ def rawrevokeattribute(signatureID):
 
     click.echo()
     click.echo("Transaction sent.")
+
+
+@cli.command()
+@click.option('--attributetype', help='Attribute type', type=STR)
+@click.option('--identifier', help='Attribute identifier', type=STR)
+@click.option('--owner', help='Attribute owner', type=STR)
+def search(attributetype, identifier, owner):
+    """Search for attributes."""
+    events = Events()
+    attributes = events.filter_attributes(None, identifier, owner)
+
+    for attribute in attributes:
+        if attributetype is not None and attributetype != attribute['attributeType']:
+            continue
+            
+        click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
+        click.echo("\tType: " + attribute['attributeType'])
+        click.echo("\tOwner: " + attribute['owner'])
+        click.echo("\tIdentifier: " + attribute['identifier'])
+        click.echo()

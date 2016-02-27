@@ -43,10 +43,10 @@ def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
 @cli.command()
 @click.option('--attributeid', prompt=True, type=STR)
 @click.option('--expiry', prompt=True, type=STR)
-def rawsignattribute(attributeID, expiry):
+def rawsignattribute(attributeid, expiry):
     """(Advanced) Manually sign an attribute about an identity."""
-    transactions = Transaction()
-    transactions.sign_attribute(attributeID, expiry)
+    transactions = Transactions()
+    transactions.sign_attribute(attributeid, expiry)
 
     click.echo()
     click.echo("Transaction sent.")
@@ -54,10 +54,23 @@ def rawsignattribute(attributeID, expiry):
 
 @cli.command()
 @click.option('--signatureid', prompt=True, type=STR)
-def rawrevokeattribute(signatureID):
+def rawrevokeattribute(signatureid):
     """(Advanced) Manaully revoke your signature about an identity."""
-    tranactions = Transaction()
-    transactions.revoke_signature(signatureID)
+    transactions = Transactions()
+    transactions.revoke_signature(signatureid)
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+
+@cli.command()
+@click.option('--attributetype', help='Attribute type', type=STR)
+@click.option('--identifier', help='Attribute identifier', type=STR)
+@click.option('--data', help='Attribute data', type=STR)
+def add(attributetype, identifier, data):
+    """Add an attribute to your identity."""
+    transactions = Transactions()
+    transactions.add_attribute_with_hash(attributetype, False, identifier, data)
 
     click.echo()
     click.echo("Transaction sent.")
@@ -75,7 +88,7 @@ def search(attributetype, identifier, owner):
     for attribute in attributes:
         if attributetype is not None and attributetype != attribute['attributeType']:
             continue
-            
+
         click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
         click.echo("\tType: " + attribute['attributeType'])
         click.echo("\tOwner: " + attribute['owner'])

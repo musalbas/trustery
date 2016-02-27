@@ -54,6 +54,18 @@ class Transactions(object):
         data = self._contracttranslator.encode('addAttribute', args)
         return self._send_transaction(data)
 
+    def add_attribute_with_hash(self, attributetype, has_proof, identifier, data):
+        """
+        Send a transaction to add an identity attribute, automatically calculating its datahash if the data is stored remotely.
+
+        attributetype: the type of address.
+        has_proof: True if the attribute has a cryptographic proof, otherwise False.
+        identifier: the indexable identifier of the attribute.
+        data: the data of the attribute.
+        """
+        datahash = '' # TODO calculate hash for remotely stored data
+        return self.add_attribute(attributetype, has_proof, identifier, data, datahash)
+
     def sign_attribute(self, attributeID, expiry):
         """
         Send a transaction to sign an identity attriute.

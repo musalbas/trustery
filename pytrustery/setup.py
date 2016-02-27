@@ -13,6 +13,7 @@ setup(
         'configobj',
         'appdirs',
         'ethereum-rpc-client',
+        'pycryptodome',
     ],
     entry_points='''
         [console_scripts]

@@ -1,6 +1,7 @@
 """Console application for Trustery."""
 
 import logging
+import time
 
 import click
 
@@ -81,7 +82,13 @@ def add(attributetype, identifier, data):
 @click.option('--expires', prompt='Signature days to expire', default=365, help='Signature days to expire', type=int)
 def sign(attributeid, expires):
     """Sign an attribute."""
-    pass
+    transactions = Transactions()
+
+    expiry = int(time.time()) + expires * 60 * 60 * 24
+    transactions.sign_attribute(attributeid, expiry)
+
+    click.echo()
+    click.echo("Transaction sent.")
 
 
 @cli.command()

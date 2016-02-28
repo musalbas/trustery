@@ -9,7 +9,7 @@ from rlp.utils import encode_hex
 import trustery
 
 # Trustery contract constants.
-TRUSTERY_DEFAULT_ADDRESS = '0xd7f4a7b264ff1e5d25d12566c60ec726872a8a09'
+TRUSTERY_DEFAULT_ADDRESS = '0x7bd1f83c321127aa54f2e252cc7ee38d08e9878c'
 TRUSTERY_ABI = json.load(open(os.path.join(os.path.dirname(trustery.__file__), 'trustery_abi.json')))
 
 # Ethereum client interface.

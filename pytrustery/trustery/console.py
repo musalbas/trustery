@@ -64,9 +64,9 @@ def rawrevokeattribute(signatureid):
 
 
 @cli.command()
-@click.option('--attributetype', prompt=True, help='Attribute type', type=STR)
-@click.option('--identifier', prompt=True, help='Attribute identifier', type=STR)
-@click.option('--data', prompt=True, default='', help='Attribute data', type=STR)
+@click.option('--attributetype', prompt='Attribute type', help='Attribute type', type=STR)
+@click.option('--identifier', prompt='Attribute identifier', help='Attribute identifier', type=STR)
+@click.option('--data', prompt='Attribute data', default='', help='Attribute data', type=STR)
 def add(attributetype, identifier, data):
     """Add an attribute to your identity."""
     transactions = Transactions()
@@ -74,6 +74,14 @@ def add(attributetype, identifier, data):
 
     click.echo()
     click.echo("Transaction sent.")
+
+
+@cli.command()
+@click.option('--attributeid', prompt='Attribute ID', help='Attribute ID', type=int)
+@click.option('--expires', prompt='Signature days to expire', default=365, help='Signature days to expire', type=int)
+def sign(attributeid, expires):
+    """Sign an attribute."""
+    pass
 
 
 @cli.command()

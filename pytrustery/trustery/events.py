@@ -31,12 +31,18 @@ class Events(object):
         topics: a list of topics to search for.
         event_name: the name of the event.
         """
-        event_topic = '' # TODO implement
+        # Find the event ID (hash) for the specified event name.
+        event_topic = ''
+        if event_name is not None:
+            for event_id, event in self._contracttranslator.event_data.iteritems():
+                if event['name'] == event_name:
+                    event_topic = event_id
+                    break
 
-        # Encode topics to be sent to the Ethereum client
-        topics = [encode_api_data(topic) for topic in topics]
         # Prepent the event type to the topics.
         topics = [event_topic] + topics
+        # Encode topics to be sent to the Ethereum client.
+        topics = [encode_api_data(topic) for topic in topics]
 
         # Get logs from Ethereum client.
         logs = ethclient.get_logs(
@@ -66,4 +72,4 @@ class Events(object):
         owner: the Ethereum address that owns the attributes.
         identifier: the identifier of the attribute.
         """
-        return self._get_logs([attributeID, owner, identifier])
+        return self._get_logs([attributeID, owner, identifier], event_name='AttributeAdded')

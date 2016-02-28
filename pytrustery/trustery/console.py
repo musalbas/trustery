@@ -22,7 +22,7 @@ STR = StrParamType()
 @click.group()
 def cli():
     """Ethereum-based identity system."""
-    # Prevents the requests module from printing INFO logs to the console.
+    # Prevent the requests module from printing INFO logs to the console.
     logging.getLogger("requests").setLevel(logging.WARNING)
 
 
@@ -33,7 +33,7 @@ def cli():
 @click.option('--data', prompt=True, type=STR)
 @click.option('--datahash', prompt=True, type=STR)
 def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
-    """(Advanced) Manually add an attribute about your identity."""
+    """(Advanced) Manually add an attribute to your identity."""
     transactions = Transactions()
     transactions.add_attribute(attributetype, has_proof, identifier, data, datahash)
 
@@ -56,7 +56,7 @@ def rawsignattribute(attributeid, expiry):
 @cli.command()
 @click.option('--signatureid', prompt=True, type=STR)
 def rawrevokeattribute(signatureid):
-    """(Advanced) Manaully revoke your signature about an identity."""
+    """(Advanced) Manaully revoke your signature of an attribute."""
     transactions = Transactions()
     transactions.revoke_signature(signatureid)
 

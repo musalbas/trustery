@@ -31,10 +31,11 @@ def encode_api_data(data):
         # Use native hex() to encode non-string data has encode_hex() does not support it.
         return hex(data)
     elif type(data) == long:
-        # Use native hex() to encode long and remove the trailing 'L'.
-        encoded = hex(data)[:-1]
-        if hex(data)[-1:] == 'L':
-            encoded = hex(data)[:-1]
+        # Use native hex() to encode long.
+        encoded = hex(data)
+        if encoded[-1:] == 'L':
+            # Remove the trailing 'L' if found.
+            encoded = encoded[:-1]
         return encoded
     else:
         # Encode data using encode_hex(), the recommended way to encode Ethereum data.

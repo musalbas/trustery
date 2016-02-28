@@ -24,6 +24,16 @@ class Events(object):
         # Initialise contract ABI.
         self._contracttranslator = abi.ContractTranslator(TRUSTERY_ABI)
 
+    def _get_event_id_by_name(self, event_name):
+        """
+        Get the ID of an event given its name.
+
+        event_name: the name of the event.
+        """
+        for event_id, event in self._contracttranslator.event_data.iteritems():
+            if event['name'] == event_name:
+                return event_id
+
     def _get_logs(self, topics, event_name=None):
         """
         Get logs (events).
@@ -31,13 +41,11 @@ class Events(object):
         topics: a list of topics to search for.
         event_name: the name of the event.
         """
-        # Find the event ID (hash) for the specified event name.
-        event_topic = ''
-        if event_name is not None:
-            for event_id, event in self._contracttranslator.event_data.iteritems():
-                if event['name'] == event_name:
-                    event_topic = event_id
-                    break
+        # Set the event topic to the event ID if the event name is specified.
+        if event_name is None:
+            event_topic = None
+        else:
+            event_topic = self._get_event_id_by_name(event_name)
 
         # Prepent the event type to the topics.
         topics = [event_topic] + topics

@@ -104,8 +104,11 @@ def search(attributetype, identifier, owner):
         if attributetype is not None and attributetype != attribute['attributeType']:
             continue
 
+        signatures = events.filter_signatures(attributeID=attribute['attributeID'])
+
         click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
         click.echo("\tType: " + attribute['attributeType'])
         click.echo("\tOwner: " + attribute['owner'])
         click.echo("\tIdentifier: " + attribute['identifier'])
+        click.echo("\t[" + str(len(signatures)) + " signatures]")
         click.echo()

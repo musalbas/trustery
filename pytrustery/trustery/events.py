@@ -81,3 +81,13 @@ class Events(object):
         identifier: the identifier of the attribute.
         """
         return self._get_logs([attributeID, owner, identifier], event_name='AttributeAdded')
+
+    def filter_signatures(self, signatureID=None, signer=None, attributeID=None):
+        """
+        Filter and retrieve signatures.
+
+        signatureID: the ID of the signature.
+        signer: the Ethereum address that owns the signature.
+        attributeID: the ID of the attribute.
+        """
+        return self._get_logs([signatureID, signer, attributeID])

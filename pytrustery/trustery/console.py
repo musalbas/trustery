@@ -41,7 +41,7 @@ def rawaddattribute(attributetype, has_proof, identifier, data, datahash):
 
 
 @cli.command()
-@click.option('--attributeid', prompt=True, type=STR)
+@click.option('--attributeid', prompt=True, type=int)
 @click.option('--expiry', prompt=True, type=STR)
 def rawsignattribute(attributeid, expiry):
     """(Advanced) Manually sign an attribute about an identity."""

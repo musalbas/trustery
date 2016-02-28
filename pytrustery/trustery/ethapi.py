@@ -8,11 +8,11 @@ from rlp.utils import encode_hex
 
 import trustery
 
-# Trustery contract constants
+# Trustery contract constants.
 TRUSTERY_DEFAULT_ADDRESS = '0xd7f4a7b264ff1e5d25d12566c60ec726872a8a09'
 TRUSTERY_ABI = json.load(open(os.path.join(os.path.dirname(trustery.__file__), 'trustery_abi.json')))
 
-# Ethereum client interface
+# Ethereum client interface.
 ethclient = eth_rpc_client.Client(host='127.0.0.1', port='8545')
 
 

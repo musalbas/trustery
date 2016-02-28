@@ -32,7 +32,10 @@ def encode_api_data(data):
         return hex(data)
     elif type(data) == long:
         # Use native hex() to encode long and remove the trailing 'L'.
-        return hex(data)[:-1]
+        encoded = hex(data)[:-1]
+        if hex(data)[-1:] == 'L':
+            encoded = hex(data)[:-1]
+        return encoded
     else:
         # Encode data using encode_hex(), the recommended way to encode Ethereum data.
         return '0x' + encode_hex(data)

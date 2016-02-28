@@ -3,7 +3,7 @@ contract Trustery {
         address owner;
         string attributeType;
         bool has_proof;
-        string identifier;
+        bytes32 identifier;
         string data;
         string datahash;
     }
@@ -22,11 +22,11 @@ contract Trustery {
     Signature[] public signatures;
     Revocation[] public revocations;
 
-    event AttributeAdded(uint indexed attributeID, address indexed owner, string attributeType, bool has_proof, string indexed identifier, string data, string datahash);
+    event AttributeAdded(uint indexed attributeID, address indexed owner, string attributeType, bool has_proof, bytes32 indexed identifier, string data, string datahash);
     event AttributeSigned(uint indexed signatureID, address indexed signer, uint indexed attributeID, uint expiry);
     event SignatureRevoked(uint indexed revocationID, uint indexed signatureID);
 
-    function addAttribute(string attributeType, bool has_proof, string identifier, string data, string datahash) returns (uint attributeID) {
+    function addAttribute(string attributeType, bool has_proof, bytes32 identifier, string data, string datahash) returns (uint attributeID) {
         attributeID = attributes.length++;
         Attribute attribute = attributes[attributeID];
         attribute.owner = msg.sender;

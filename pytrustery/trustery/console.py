@@ -64,9 +64,9 @@ def rawrevokeattribute(signatureid):
 
 
 @cli.command()
-@click.option('--attributetype', help='Attribute type', type=STR)
-@click.option('--identifier', help='Attribute identifier', type=STR)
-@click.option('--data', help='Attribute data', type=STR)
+@click.option('--attributetype', prompt=True, help='Attribute type', type=STR)
+@click.option('--identifier', prompt=True, help='Attribute identifier', type=STR)
+@click.option('--data', prompt=True, default='', help='Attribute data', type=STR)
 def add(attributetype, identifier, data):
     """Add an attribute to your identity."""
     transactions = Transactions()

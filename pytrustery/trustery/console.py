@@ -103,6 +103,13 @@ def revoke(signatureid):
 
 
 @cli.command()
+@click.option('--attributeid', prompt='Attribute ID', help='Attribute ID', type=STR)
+def retrieve(attributeid):
+    """Retrieve an attribute."""
+    pass
+
+
+@cli.command()
 @click.option('--attributetype', help='Attribute type', type=STR)
 @click.option('--identifier', help='Attribute identifier', type=STR)
 @click.option('--owner', help='Attribute owner', type=STR)
@@ -115,11 +122,11 @@ def search(attributetype, identifier, owner):
         if attributetype is not None and attributetype != attribute['attributeType']:
             continue
 
-        signatures = events.filter_signatures(attributeID=attribute['attributeID'])
+        signatures_status = events.get_attribute_signatures_status(attribute['attributeID'])
 
         click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
         click.echo("\tType: " + attribute['attributeType'])
         click.echo("\tOwner: " + attribute['owner'])
         click.echo("\tIdentifier: " + attribute['identifier'])
-        click.echo("\t[" + str(len(signatures)) + " signatures]")
+        click.echo("\t[" + str(signatures_status['status']['valid']) + " valid signatures]")
         click.echo()

@@ -1,5 +1,7 @@
 """API for retrieving Trustery events."""
 
+import time
+
 from ethereum import abi
 from ethereum import processblock
 from ethereum.utils import big_endian_to_int
@@ -90,4 +92,73 @@ class Events(object):
         signer: the Ethereum address that owns the signature.
         attributeID: the ID of the attribute.
         """
-        return self._get_logs([signatureID, signer, attributeID])
+        return self._get_logs([signatureID, signer, attributeID], event_name='AttributeSigned')
+
+    def filter_revocations(self, revocationID=None, signatureID=None):
+        """
+        Filter and retrieve revocations.
+
+        revocationID: the ID of the revocation.
+        attributeID: the ID of the attribute.
+        """
+        return self._get_logs([revocationID, signatureID], event_name='SignatureRevoked')
+
+    def get_attribute_signatures_status(self, attributeID):
+        """
+        Get all the signatures of an attribute and check whether they have been revoked or expired.
+
+        attributeID: the ID of the attribute.
+
+        Returns a dictionaries representing the signatures status of the attribute:
+            dict['status']['valid']: number of valid signatures.
+            dict['status']['invalid']: number of invalid signatures.
+            dict['signatures']: a list of signatures.
+
+            For a signature index s:
+                dict['signatures'][s]: dictionary representing the signature, plus the additional status keys below.
+                dict['signatures'][s]['expired']: True if the signature is expired.
+                dict['signatures'][s]['revocation']: dictionary representing the signature's revocation if it was revoked, otherwise False.
+                dict['signatures'][s]['valid']: True if the signature is valid.
+        """
+        # Prepare return dictionary
+        signatures = []
+        status = {
+            'valid': 0,
+            'invalid': 0
+        }
+        signatures_status = {
+            'status': status,
+            'signatures': signatures
+        }
+
+        # Filter signatures for the specified attribute
+        rawsignatures = self.filter_signatures(attributeID=attributeID)
+
+        # Process signatures
+        for rawsignature in rawsignatures:
+            signature = {}
+
+            # Add signature properties to the dictionary
+            signature.update(rawsignature)
+
+            # Check if expired
+            signature['expired'] = time.time() > signature['expiry']
+
+            # Check if revoked
+            rawrevocations = self.filter_revocations(signatureID=signature['signatureID'])
+            if len(rawrevocations) > 0:
+                signature['revocation'] = rawrevocations
+            else:
+                signature['revocation'] = False
+
+            # Check if valid
+            if not signature['expired'] and not signature['revocation']:
+                signature['valid'] = True
+                status['valid'] += 1
+            else:
+                signature['valid'] = False
+                status['invalid'] += 1
+
+            signatures.append(signature)
+
+        return signatures_status

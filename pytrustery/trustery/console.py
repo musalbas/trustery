@@ -103,10 +103,17 @@ def revoke(signatureid):
 
 
 @cli.command()
-@click.option('--attributeid', prompt='Attribute ID', help='Attribute ID', type=STR)
+@click.option('--attributeid', prompt='Attribute ID', help='Attribute ID', type=int)
 def retrieve(attributeid):
     """Retrieve an attribute."""
-    pass
+    events = Events()
+    attribute = events.retrieve_attribute(attributeid)
+
+    if attribute is None:
+        click.echo("No such attribute.")
+        return
+
+    click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
 
 
 @cli.command()

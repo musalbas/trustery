@@ -162,3 +162,22 @@ class Events(object):
             signatures.append(signature)
 
         return signatures_status
+
+    def retrieve_attribute(self, attributeID):
+        """Get an attribute, its status and signatures status, downloading off-blockchain data if necessary.
+
+        attributeID: the ID of the attribute.
+
+        Returns a dictionary representing all of the attribute's properties:
+            dict: dictionary representing the attribute itself, plus the additional status keys below.
+            dict['signatures_status']: the signatures status of the attribute.
+        """
+        rawattributes = self.filter_attributes(attributeID=attributeID)
+
+        if not rawattributes:
+            return None
+
+        attribute = rawattributes[0]
+        attribute['signatures_status'] = self.get_attribute_signatures_status(attributeID)
+
+        return attribute

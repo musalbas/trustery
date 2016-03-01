@@ -92,6 +92,17 @@ def sign(attributeid, expires):
 
 
 @cli.command()
+@click.option('--signatureid', prompt='Signature ID', help='Signature ID', type=int)
+def revoke(signatureid):
+    """Revoke one of your signatures."""
+    transactions = Transactions()
+    transactions.revoke_signature(signatureid)
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+
+@cli.command()
 @click.option('--attributetype', help='Attribute type', type=STR)
 @click.option('--identifier', help='Attribute identifier', type=STR)
 @click.option('--owner', help='Attribute owner', type=STR)

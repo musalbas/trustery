@@ -113,6 +113,7 @@ def retrieve(attributeid):
         click.echo("No such attribute.")
         return
 
+    click.echo()
     click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
 
 

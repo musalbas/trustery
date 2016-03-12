@@ -114,7 +114,27 @@ def retrieve(attributeid):
         return
 
     click.echo()
+
     click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
+    click.echo("\tType: " + attribute['attributeType'])
+    click.echo("\tOwner: " + attribute['owner'])
+    click.echo("\tIdentifier: " + attribute['identifier'])
+    click.echo("\t[" + str(attribute['signatures_status']['status']['valid']) + " valid signatures]")
+    click.echo()
+
+    click.echo("Signatures for attribute ID #" + str(attribute['attributeID']) + ':')
+    for signature in attribute['signatures_status']['signatures']:
+        sig_line = "\t#" + str(signature['signatureID'])
+
+        if signature['revocation']:
+            sig_line += " [revoked]"
+        elif signature['expired']:
+            sig_line += " [expired]"
+        elif signature['valid']:
+            sig_line += " [valid]"
+
+        sig_line += " by " + signature['signer']
+        click.echo(sig_line)
 
 
 @cli.command()

@@ -136,6 +136,10 @@ def retrieve(attributeid):
         sig_line += " by " + signature['signer']
         click.echo(sig_line)
 
+    click.echo()
+    click.echo("--ATTRIBUTE DATA:")
+    click.echo(attribute['data'])
+
 
 @cli.command()
 @click.option('--attributetype', help='Attribute type', type=STR)

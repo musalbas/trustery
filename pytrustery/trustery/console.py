@@ -1,5 +1,6 @@
 """Console application for Trustery."""
 
+import atexit
 import logging
 import time
 
@@ -7,6 +8,7 @@ import click
 
 from trustery.events import Events
 from trustery.transactions import Transactions
+from trustery.userconfig import userconfig, trust, untrust, trusted
 
 
 class StrParamType(click.ParamType):
@@ -24,6 +26,9 @@ def cli():
     """Ethereum-based identity system."""
     # Prevent the requests module from printing INFO logs to the console.
     logging.getLogger("requests").setLevel(logging.WARNING)
+
+    # Save the configuration on exit.
+    atexit.register(userconfig.write)
 
 
 @cli.command()
@@ -100,6 +105,14 @@ def revoke(signatureid):
 
     click.echo()
     click.echo("Transaction sent.")
+
+
+@cli.command()
+@click.option('--address', prompt='Ethereum address', help='Ethereum address', type=str)
+def trust(address):
+    """Trust an Ethereum address."""
+    click.echo()
+    click.echo("Address " + address + " trusted.")
 
 
 @cli.command()

@@ -10,3 +10,22 @@ configfile = os.path.join(user_config_dir('trustery'), 'config.ini')
 
 # Create configuration object.
 userconfig = ConfigObj(configfile)
+
+# Initialise configuration.
+if 'truststore' not in userconfig:
+    userconfig['truststore'] = {}
+
+
+def trust(address):
+    """Add address to the trust store."""
+    userconfig['truststore'][address] = True
+
+
+def untrust(address):
+    """Remove address from the trust store."""
+    userconfig['truststore'][address] = False
+
+
+def trusted(address):
+    """Return True if an address is in the trust store, otherwise False."""
+    return address in userconfig['truststore'] and userconfig['truststore'][address]

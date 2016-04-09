@@ -8,7 +8,7 @@ import click
 
 from trustery.events import Events
 from trustery.transactions import Transactions
-from trustery.userconfig import userconfig, trust, untrust, trusted
+from trustery.userconfig import userconfig, trust, untrust, is_trusted, get_trusted
 
 
 class StrParamType(click.ParamType):
@@ -111,8 +111,27 @@ def revoke(signatureid):
 @click.option('--address', prompt='Ethereum address', help='Ethereum address', type=str)
 def trust(address):
     """Trust an Ethereum address."""
+    trust(address)
+
     click.echo()
     click.echo("Address " + address + " trusted.")
+
+
+@cli.command()
+@click.option('--address', prompt='Ethereum address', help='Ethereum address', type=str)
+def untrust(address):
+    """Untrust an Ethereum address."""
+    untrust(address)
+
+    click.echo()
+    click.echo("Address " + address + " untrusted.")
+
+
+@cli.command()
+def trusted():
+    """View the list of trusted Ethereum addresses."""
+    for address in get_trusted():
+        click.echo(address)
 
 
 @cli.command()

@@ -8,7 +8,7 @@ import click
 
 from trustery.events import Events
 from trustery.transactions import Transactions
-from trustery.userconfig import userconfig, trust, untrust, is_trusted, get_trusted
+from trustery import userconfig
 
 
 class StrParamType(click.ParamType):
@@ -28,7 +28,7 @@ def cli():
     logging.getLogger("requests").setLevel(logging.WARNING)
 
     # Save the configuration on exit.
-    atexit.register(userconfig.write)
+    atexit.register(userconfig.config.write)
 
 
 @cli.command()
@@ -113,10 +113,10 @@ def trust(address):
     """Trust an Ethereum address."""
     click.echo()
 
-    if is_trusted(address):
+    if userconfig.is_trusted(address):
         click.echo("Address " + address + " is already trusted.")
     else:
-        trust(address)
+        userconfig.trust(address)
         click.echo("Address " + address + " trusted.")
 
 
@@ -126,17 +126,17 @@ def untrust(address):
     """Untrust an Ethereum address."""
     click.echo()
 
-    if not is_trusted(address):
+    if not userconfig.is_trusted(address):
         click.echo("Address " + address + " is already not trusted.")
     else:
-        untrust(address)
+        userconfig.untrust(address)
         click.echo("Address " + address + " untrusted.")
 
 
 @cli.command()
 def trusted():
     """View the list of trusted Ethereum addresses."""
-    for address in get_trusted():
+    for address in userconfig.get_trusted():
         click.echo(address)
 
 

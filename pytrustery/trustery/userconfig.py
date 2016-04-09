@@ -16,28 +16,28 @@ except OSError:
 configfile = os.path.join(user_config_dir('trustery'), 'config.ini')
 
 # Create configuration object.
-userconfig = ConfigObj(configfile)
+config = ConfigObj(configfile)
 
 # Initialise configuration.
-if 'truststore' not in userconfig:
-    userconfig['truststore'] = {}
+if 'truststore' not in config:
+    config['truststore'] = {}
 
 
 def trust(address):
     """Add address to the trust store."""
-    userconfig['truststore'][address] = True
+    config['truststore'][address] = True
 
 
 def untrust(address):
     """Remove address from the trust store."""
-    userconfig['truststore'][address] = False
+    del config['truststore'][address]
 
 
 def is_trusted(address):
     """Return True if an address is in the trust store, otherwise False."""
-    return address in userconfig['truststore'] and userconfig['truststore'][address]
+    return address in config['truststore'] and config['truststore'][address]
 
 
 def get_trusted():
     """Return a list of trusted Ethereum addresses."""
-    return userconfig['truststore'].keys()
+    return config['truststore'].keys()

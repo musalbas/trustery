@@ -5,6 +5,13 @@ import os
 from appdirs import user_config_dir
 from configobj import ConfigObj
 
+# Create configuration directory in case it does not exist.
+try:
+    os.makedirs(user_config_dir('trustery'))
+except OSError:
+    if not os.path.isdir(user_config_dir('trustery')):
+        raise
+
 # Determine cross-platform configuration file path.
 configfile = os.path.join(user_config_dir('trustery'), 'config.ini')
 
@@ -33,4 +40,4 @@ def is_trusted(address):
 
 def get_trusted():
     """Return a list of trusted Ethereum addresses."""
-    return userconfig['trustore'].keys()
+    return userconfig['truststore'].keys()

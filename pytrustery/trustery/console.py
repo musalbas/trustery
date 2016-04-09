@@ -108,7 +108,7 @@ def revoke(signatureid):
 
 
 @cli.command()
-@click.option('--address', prompt='Ethereum address', help='Ethereum address', type=str)
+@click.option('--address', prompt='Ethereum address', help='Ethereum address', type=STR)
 def trust(address):
     """Trust an Ethereum address."""
     trust(address)
@@ -118,7 +118,7 @@ def trust(address):
 
 
 @cli.command()
-@click.option('--address', prompt='Ethereum address', help='Ethereum address', type=str)
+@click.option('--address', prompt='Ethereum address', help='Ethereum address', type=STR)
 def untrust(address):
     """Untrust an Ethereum address."""
     untrust(address)

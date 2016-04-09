@@ -29,3 +29,8 @@ def untrust(address):
 def is_trusted(address):
     """Return True if an address is in the trust store, otherwise False."""
     return address in userconfig['truststore'] and userconfig['truststore'][address]
+
+
+def get_trusted():
+    """Return a list of trusted Ethereum addresses."""
+    return userconfig['trustore'].keys()

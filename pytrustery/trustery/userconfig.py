@@ -26,6 +26,6 @@ def untrust(address):
     userconfig['truststore'][address] = False
 
 
-def trusted(address):
+def is_trusted(address):
     """Return True if an address is in the trust store, otherwise False."""
     return address in userconfig['truststore'] and userconfig['truststore'][address]

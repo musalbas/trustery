@@ -111,20 +111,26 @@ def revoke(signatureid):
 @click.option('--address', prompt='Ethereum address', help='Ethereum address', type=STR)
 def trust(address):
     """Trust an Ethereum address."""
-    trust(address)
-
     click.echo()
-    click.echo("Address " + address + " trusted.")
+
+    if is_trusted(address):
+        click.echo("Address " + address + " is already trusted.")
+    else:
+        trust(address)
+        click.echo("Address " + address + " trusted.")
 
 
 @cli.command()
 @click.option('--address', prompt='Ethereum address', help='Ethereum address', type=STR)
 def untrust(address):
     """Untrust an Ethereum address."""
-    untrust(address)
-
     click.echo()
-    click.echo("Address " + address + " untrusted.")
+
+    if not is_trusted(address):
+        click.echo("Address " + address + " is already not trusted.")
+    else:
+        untrust(address)
+        click.echo("Address " + address + " untrusted.")
 
 
 @cli.command()

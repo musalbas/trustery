@@ -74,7 +74,18 @@ class Transactions(object):
         keyid: the ID of the PGP key.
         """
         # Generate PGP attribute data and get identifier (fingerprint).
-        (identifier, data) = generate_pgp_attribute_data(keyid, self.from_address)
+        (fingerprint, data) = generate_pgp_attribute_data(keyid, self.from_address)
+
+        # Express identifier as fingerprint in binary format.
+        identifier = fingerprint.decode('hex')
+
+        self.add_attribute(
+            attributetype='pgp-key',
+            has_proof=True,
+            identifier=identifier,
+            data=data,
+            datahash=''
+        )
 
     def sign_attribute(self, attributeID, expiry):
         """

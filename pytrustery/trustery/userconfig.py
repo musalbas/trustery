@@ -24,17 +24,29 @@ if 'truststore' not in config:
 
 
 def trust(address):
-    """Add address to the trust store."""
+    """
+    Add address to the trust store.
+
+    address: the address to add.
+    """
     config['truststore'][address] = True
 
 
 def untrust(address):
-    """Remove address from the trust store."""
+    """
+    Remove address from the trust store.
+
+    address: the address to remove.
+    """
     del config['truststore'][address]
 
 
 def is_trusted(address):
-    """Return True if an address is in the trust store, otherwise False."""
+    """
+    Return True if an address is in the trust store, otherwise False.
+
+    address: the address to check.
+    """
     return address in config['truststore'] and config['truststore'][address]
 
 

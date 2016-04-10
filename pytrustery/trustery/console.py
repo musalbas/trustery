@@ -84,6 +84,19 @@ def add(attributetype, identifier, data):
 
 
 @cli.command()
+@click.option('--attributetype', prompt='Attribute type', help='Attribute type', type=STR)
+@click.option('--identifier', prompt='Attribute identifier', help='Attribute identifier', type=STR)
+@click.option('--data', prompt='Attribute data', default='', help='Attribute data', type=unicode)
+def ipfsadd(attributetype, identifier, data):
+    """Add an attribute to your identity over IPFS."""
+    transactions = Transactions()
+    transactions.add_attribute_over_ipfs(attributetype, False, identifier, data)
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+
+@cli.command()
 @click.option('--attributeid', prompt='Attribute ID', help='Attribute ID', type=int)
 @click.option('--expires', prompt='Signature days to expire', default=365, help='Signature days to expire', type=int)
 def sign(attributeid, expires):

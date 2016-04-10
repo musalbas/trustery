@@ -2,6 +2,7 @@
 
 from ethereum import abi
 
+from gpgapi import generate_pgp_attribute_data
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_DEFAULT_ADDRESS
 from ethapi import ethclient
@@ -65,6 +66,15 @@ class Transactions(object):
         """
         datahash = '' # TODO calculate hash for remotely stored data
         return self.add_attribute(attributetype, has_proof, identifier, data, datahash)
+
+    def add_pgp_attribute(self, keyid):
+        """
+        Send a transaction to add an identity PGP attribute.
+
+        keyid: the ID of the PGP key.
+        """
+        # Generate PGP attribute data and get identifier (fingerprint).
+        (identifier, data) = generate_pgp_attribute_data(keyid, self.from_address)
 
     def sign_attribute(self, attributeID, expiry):
         """

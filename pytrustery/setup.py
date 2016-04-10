@@ -13,6 +13,7 @@ setup(
         'configobj',
         'appdirs',
         'ethereum-rpc-client',
+        'python-gnupg',
     ],
     entry_points='''
         [console_scripts]

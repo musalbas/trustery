@@ -193,3 +193,19 @@ def search(attributetype, identifier, owner):
 
         echo_attribute_block(attribute, signatures_status)
         click.echo()
+
+
+@cli.command()
+@click.option('--keyid', prompt='Key ID', help='Key ID', type=STR)
+def addpgp(keyid):
+    """Add a PGP key attribute to your identity."""
+    transactions = Transactions()
+    click.echo()
+
+    try:
+        transactions.add_pgp_attribute(keyid)
+    except ValueError as e:
+        click.echo("Error: " + e.message)
+        return
+
+    click.echo("Transaction sent.")

@@ -197,13 +197,13 @@ def search(attributetype, identifier, owner):
 
 @cli.command()
 @click.option('--keyid', prompt='Key ID', help='Key ID', type=STR)
-def addpgp(keyid):
-    """Add a PGP key attribute to your identity."""
+def ipfsaddpgp(keyid):
+    """Add a PGP key attribute to your identity over IPFS."""
     transactions = Transactions()
     click.echo()
 
     try:
-        transactions.add_pgp_attribute(keyid)
+        transactions.add_pgp_attribute_over_ipfs(keyid)
     except ValueError as e:
         click.echo("Error: " + e.message)
         return

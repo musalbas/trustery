@@ -14,6 +14,7 @@ setup(
         'appdirs',
         'ethereum-rpc-client',
         'python-gnupg',
+        'ipfs-api'
     ],
     entry_points='''
         [console_scripts]

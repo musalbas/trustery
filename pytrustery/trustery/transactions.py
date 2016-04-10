@@ -1,7 +1,10 @@
 """API for making Trustery tranactions."""
 
+import io
+
 from ethereum import abi
 
+from ipfsapi import ipfsclient
 from gpgapi import generate_pgp_attribute_data
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_DEFAULT_ADDRESS
@@ -67,9 +70,27 @@ class Transactions(object):
         datahash = '' # TODO calculate hash for remotely stored data
         return self.add_attribute(attributetype, has_proof, identifier, data, datahash)
 
-    def add_pgp_attribute(self, keyid):
+    def add_attribute_over_ipfs(self, attributetype, has_proof, identifier, data):
         """
-        Send a transaction to add an identity PGP attribute.
+        Send a transaction to add an identity attribute, storing the data on IPFS first.
+
+        attributetype: the type of address.
+        has_proof: True if the attribute has a cryptographic proof, otherwise False.
+        identifier: the indexable identifier of the attribute.
+        data: the data of the attribute.
+        """
+        #  Store the data as an IPFS block and get its key.
+        ipfs_key = ipfsclient.block_put(io.StringIO(data))['Key']
+
+        # Generate Trustery-specific URI for the IPFS block.
+        ipfs_uri = 'ipfs-block://' + ipfs_key
+
+        # Add the attribute.
+        self.add_attribute(attributetype, has_proof, identifier, ipfs_uri, datahash='')
+
+    def add_pgp_attribute_over_ipfs(self, keyid):
+        """
+        Send a transaction to add an identity PGP attribute, storing the attribute data on IPFS.
 
         keyid: the ID of the PGP key.
         """
@@ -79,12 +100,11 @@ class Transactions(object):
         # Express identifier as fingerprint in binary format.
         identifier = fingerprint.decode('hex')
 
-        self.add_attribute(
+        self.add_attribute_over_ipfs(
             attributetype='pgp-key',
             has_proof=True,
             identifier=identifier,
             data=data,
-            datahash=''
         )
 
     def sign_attribute(self, attributeID, expiry):

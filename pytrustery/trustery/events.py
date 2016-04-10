@@ -7,6 +7,7 @@ from ethereum import processblock
 from ethereum.utils import big_endian_to_int
 from rlp.utils import decode_hex
 
+from ipfsapi import ipfsclient
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_DEFAULT_ADDRESS
 from ethapi import ethclient
@@ -179,5 +180,10 @@ class Events(object):
 
         attribute = rawattributes[0]
         attribute['signatures_status'] = self.get_attribute_signatures_status(attributeID)
+
+        # Download IPFS data if necessary.
+        if attribute['data'].startswith('ipfs-block://'):
+            ipfs_key = attribute['data'][len('ipfs-block://'):]
+            attribute['data'] = ipfsclient.block_get(ipfs_key)
 
         return attribute

@@ -170,6 +170,17 @@ def retrieve(attributeid):
     echo_attribute_block(attribute)
     click.echo()
 
+    if attribute['has_proof']:
+        click.echo("Proof status for attribute ID #" + str(attribute['attributeID']) + ':')
+        if attribute['proof_valid'] is None:
+            click.echo("\tUnknown")
+        elif attribute['proof_valid']:
+            click.echo("\t Valid")
+        else:
+            click.echo("INVALID")
+
+        click.echo()
+
     click.echo("Signatures for attribute ID #" + str(attribute['attributeID']) + ':')
     for signature in attribute['signatures_status']['signatures']:
         sig_line = "\t#" + str(signature['signatureID'])

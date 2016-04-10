@@ -1,3 +1,5 @@
+"""Interface for GPG."""
+
 import shutil
 import tempfile
 

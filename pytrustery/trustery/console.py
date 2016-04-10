@@ -6,6 +6,7 @@ import time
 
 import click
 
+from trustery.consoleutil import echo_attribute_block
 from trustery.events import Events
 from trustery.transactions import Transactions
 from trustery import userconfig
@@ -153,11 +154,7 @@ def retrieve(attributeid):
 
     click.echo()
 
-    click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
-    click.echo("\tType: " + attribute['attributeType'])
-    click.echo("\tOwner: " + attribute['owner'])
-    click.echo("\tIdentifier: " + attribute['identifier'])
-    click.echo("\t[" + str(attribute['signatures_status']['status']['valid']) + " valid signatures]")
+    echo_attribute_block(attribute)
     click.echo()
 
     click.echo("Signatures for attribute ID #" + str(attribute['attributeID']) + ':')
@@ -194,9 +191,5 @@ def search(attributetype, identifier, owner):
 
         signatures_status = events.get_attribute_signatures_status(attribute['attributeID'])
 
-        click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
-        click.echo("\tType: " + attribute['attributeType'])
-        click.echo("\tOwner: " + attribute['owner'])
-        click.echo("\tIdentifier: " + attribute['identifier'])
-        click.echo("\t[" + str(signatures_status['status']['valid']) + " valid signatures]")
+        echo_attribute_block(attribute, signatures_status)
         click.echo()

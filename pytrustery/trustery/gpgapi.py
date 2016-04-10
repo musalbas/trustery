@@ -29,6 +29,8 @@ def generate_pgp_attribute_data(keyid, address):
     """
     Generate the data field (the PGP public key and cryptographic proof) for a PGP attribute.
 
+    Returns a (fingerprint, data) tuple.
+
     keyid: the ID of the PGP key.
     address: Ethereum address to generate cryptographic proof for.
     """
@@ -63,3 +65,48 @@ def generate_pgp_attribute_data(keyid, address):
 
     # Return data and fingerprint.
     return (fingerprint, data)
+
+
+def process_proof(data):
+    """
+    Process cryptographic proof of PGP attribute data.
+
+    Returns a (Ethereum address, PGP key fingerprint) tuple the proof is associated with if the signature is valid, otherwise False.
+
+    data: the PGP attribute data.
+    """
+    # Extract key, signature and Ethereum address.
+    key = ''
+    signature = ''
+    address = ''
+    key_mode = True
+    signature_mode = False
+    for line in data.split('\n'):
+        line = line.strip()
+        if line == '-----END PGP PUBLIC KEY BLOCK-----':
+            key_mode = False
+            key += line + '\n'
+        elif line == '-----BEGIN PGP PUBLIC KEY BLOCK-----' or key_mode:
+            if not key_mode:
+                key_mode = True
+            key += line + '\n'
+        elif line == '-----END PGP SIGNATURE-----':
+            signature_mode = False
+            signature += line + '\n'
+        elif line == '-----BEGIN PGP SIGNED MESSAGE-----' or signature_mode:
+            if not signature_mode:
+                signature_mode = True
+            if line.startswith('Ethereum address: '):
+                address = line[len('Ethereum address: '):]
+            signature += line + '\n'
+
+    # Create temporary keychain and import key.
+    tempgpg = TempGPG()
+    import_results = tempgpg.gpgclient.import_keys(key)
+
+    verified = tempgpg.gpgclient.verify(signature)
+
+    if not verified:
+        return False
+
+    return (address, verified.fingerprint)

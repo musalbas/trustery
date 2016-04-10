@@ -8,6 +8,7 @@ from ethereum.utils import big_endian_to_int
 from rlp.utils import decode_hex
 
 from ipfsapi import ipfsclient
+from gpgapi import process_proof
 from ethapi import TRUSTERY_ABI
 from ethapi import TRUSTERY_DEFAULT_ADDRESS
 from ethapi import ethclient
@@ -185,5 +186,18 @@ class Events(object):
         if attribute['data'].startswith('ipfs-block://'):
             ipfs_key = attribute['data'][len('ipfs-block://'):]
             attribute['data'] = ipfsclient.block_get(ipfs_key)
+
+        # Verify PGP proof if specified.
+        attribute['proof_valid'] = None # Validity unknown.
+        if attribute['has_proof'] and attribute['attributeType'] == 'pgp-key':
+            (proof_address, proof_fingerprint) = process_proof(attribute['data'])
+            if (
+                # Check that the fingerprints match.
+                proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
+                # Check that the Ethereum addresses match.
+                and proof_address == '0x' + attribute['owner']):
+                attribute['proof_valid'] = True
+            else:
+                attribute['proof_valid'] = False
 
         return attribute

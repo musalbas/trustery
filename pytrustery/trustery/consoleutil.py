@@ -10,6 +10,10 @@ def echo_attribute_block(attribute, signatures_status=None):
     if signatures_status is None and 'signatures_status' in attribute:
         signatures_status = attribute['signatures_status']
 
+    # Encode attribute identifier as hex if it contains non-ASCII characters.
+    if not all(ord(c) < 128 for c in attribute['identifier']):
+        attribute['identifier'] = '0x' + attribute['identifier'].rstrip('\x00').encode('hex')
+
     click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
     click.echo("\tType: " + attribute['attributeType'])
     click.echo("\tOwner: " + attribute['owner']

@@ -106,6 +106,8 @@ def process_proof(data):
 
     verified = tempgpg.gpgclient.verify(signature)
 
+    tempgpg.destroy()
+
     if not verified:
         return False
 

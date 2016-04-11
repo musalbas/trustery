@@ -211,4 +211,8 @@ class Events(object):
                 # PGP key attributes can have a proof, so mark this attribute's proof as unknown as none was specified.
                 attribute['proof_valid'] = None
 
+        # Set proof validity to unknown if the attribute has a proof but we did not know how to process it.
+        if attribute['has_proof'] and 'proof_valid' not in attribute:
+            attribute['proof_valid'] = None
+
         return attribute

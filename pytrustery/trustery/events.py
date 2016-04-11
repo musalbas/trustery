@@ -189,30 +189,39 @@ class Events(object):
 
         # Verify PGP proof.
         if attribute['attributeType'] == 'pgp-key':
-            # PGP key attributes can have a proof, so mark this attribute's proof as unknown by default.
-            attribute['proof_valid'] = None
-
-            # Check proof if one was specified.
-            if attribute['has_proof']:
-                # Set default validity to false unless set otherwise.
-                attribute['proof_valid'] = False
-
-                # Process the proof.
-                proof = process_proof(attribute['data'])
-
-                # Check the proof.
-                if proof:
-                    (proof_address, proof_fingerprint) = proof
-                    if (
-                        # Check that the fingerprints match.
-                        proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
-                        # Check that the Ethereum addresses match.
-                        and proof_address == '0x' + attribute['owner']
-                        ):
-                        attribute['proof_valid'] = True
+            attribute['proof_valid'] = verify_attribute_pgp_proof(attribute)
 
         # Set proof validity to unknown if the attribute has a proof but we did not know how to process it.
         if attribute['has_proof'] and 'proof_valid' not in attribute:
             attribute['proof_valid'] = None
 
         return attribute
+
+    def verify_attribute_pgp_proof(attribute):
+        """
+        Verify the PGP proof of an attribute.
+
+        Return True if valid, False if invalid, or None is unknown because a proof is unspecified.
+
+        attribute: the attribute dictionary.
+        """
+        # Don't check proof if one was not specified.
+        if not attribute['has_proof']:
+            return None # Unknown validity.
+
+        # Process the proof.
+        proof = process_proof(attribute['data'])
+
+        if not proof:
+            return False
+
+        (proof_address, proof_fingerprint) = proof
+        if (
+            # Check that the fingerprints match.
+            proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
+            # Check that the Ethereum addresses match.
+            and proof_address == '0x' + attribute['owner']
+            ):
+            return True
+
+        return False

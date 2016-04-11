@@ -187,17 +187,31 @@ class Events(object):
             ipfs_key = attribute['data'][len('ipfs-block://'):]
             attribute['data'] = ipfsclient.block_get(ipfs_key)
 
-        # Verify PGP proof if specified.
-        attribute['proof_valid'] = None # Validity unknown.
-        if attribute['has_proof'] and attribute['attributeType'] == 'pgp-key':
-            (proof_address, proof_fingerprint) = process_proof(attribute['data'])
-            if (
-                # Check that the fingerprints match.
-                proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
-                # Check that the Ethereum addresses match.
-                and proof_address == '0x' + attribute['owner']):
-                attribute['proof_valid'] = True
+        # Set default proof validity as unknown.
+        attribute['proof_valid'] = None
+
+        # Verify PGP proof.
+        if attribute['attributeType'] == 'pgp-key':
+            if attribute['has_proof']:
+                proof = process_proof(attribute['data'])
+
+                if proof:
+                    (proof_address, proof_fingerprint) = proof
+                else:
+                    attribute['proof_valid'] = False
+
+                if (
+                    attribute['proof_valid'] is not False
+                    # Check that the fingerprints match.
+                    and proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
+                    # Check that the Ethereum addresses match.
+                    and proof_address == '0x' + attribute['owner']
+                    ):
+                    attribute['proof_valid'] = True
+                else:
+                    attribute['proof_valid'] = False
             else:
+                # PGP key attributes should have a proof, so mark this attribute's proof as invalid as none was specified.
                 attribute['proof_valid'] = False
 
         return attribute

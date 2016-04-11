@@ -177,7 +177,7 @@ def retrieve(attributeid):
         elif attribute['proof_valid']:
             click.echo("\t Valid")
         else:
-            click.echo("INVALID")
+            click.echo("\tINVALID")
 
         click.echo()
 

@@ -170,9 +170,9 @@ def retrieve(attributeid):
     echo_attribute_block(attribute)
     click.echo()
 
-    if attribute['has_proof'] or attribute['proof_valid'] is not None:
+    if attribute['has_proof'] or 'proof_valid' in attribute:
         click.echo("Proof status for attribute ID #" + str(attribute['attributeID']) + ':')
-        if attribute['proof_valid'] is None:
+        if 'proof_valid' not in attribute or attribute['proof_valid'] is None:
             click.echo("\tUnknown")
         elif attribute['proof_valid']:
             click.echo("\t Valid")

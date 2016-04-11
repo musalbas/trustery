@@ -187,9 +187,6 @@ class Events(object):
             ipfs_key = attribute['data'][len('ipfs-block://'):]
             attribute['data'] = ipfsclient.block_get(ipfs_key)
 
-        # Set default proof validity as unknown.
-        attribute['proof_valid'] = None
-
         # Verify PGP proof.
         if attribute['attributeType'] == 'pgp-key':
             if attribute['has_proof']:
@@ -211,7 +208,7 @@ class Events(object):
                 else:
                     attribute['proof_valid'] = False
             else:
-                # PGP key attributes should have a proof, so mark this attribute's proof as invalid as none was specified.
-                attribute['proof_valid'] = False
+                # PGP key attributes can have a proof, so mark this attribute's proof as unknown as none was specified.
+                attribute['proof_valid'] = None
 
         return attribute

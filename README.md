@@ -1,5 +1,5 @@
 # trustery
-Identity management system on the Ethereum blockchain.
+PGP key server and identity management system on the Ethereum blockchain.
 
 <pre>Usage: trustery [OPTIONS] COMMAND [ARGS]...
 

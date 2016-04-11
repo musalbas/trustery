@@ -189,27 +189,27 @@ class Events(object):
 
         # Verify PGP proof.
         if attribute['attributeType'] == 'pgp-key':
+            # PGP key attributes can have a proof, so mark this attribute's proof as unknown by default.
+            attribute['proof_valid'] = None
+
+            # Check proof if one was specified.
             if attribute['has_proof']:
+                # Set default validity to false unless set otherwise.
+                attribute['proof_valid'] = False
+
+                # Process the proof.
                 proof = process_proof(attribute['data'])
 
+                # Check the proof.
                 if proof:
                     (proof_address, proof_fingerprint) = proof
-                else:
-                    attribute['proof_valid'] = False
-
-                if (
-                    attribute['proof_valid'] is not False
-                    # Check that the fingerprints match.
-                    and proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
-                    # Check that the Ethereum addresses match.
-                    and proof_address == '0x' + attribute['owner']
-                    ):
-                    attribute['proof_valid'] = True
-                else:
-                    attribute['proof_valid'] = False
-            else:
-                # PGP key attributes can have a proof, so mark this attribute's proof as unknown as none was specified.
-                attribute['proof_valid'] = None
+                    if (
+                        # Check that the fingerprints match.
+                        proof_fingerprint.decode('hex') == attribute['identifier'].rstrip('\x00')
+                        # Check that the Ethereum addresses match.
+                        and proof_address == '0x' + attribute['owner']
+                        ):
+                        attribute['proof_valid'] = True
 
         # Set proof validity to unknown if the attribute has a proof but we did not know how to process it.
         if attribute['has_proof'] and 'proof_valid' not in attribute:

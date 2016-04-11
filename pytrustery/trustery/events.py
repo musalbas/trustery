@@ -189,7 +189,7 @@ class Events(object):
 
         # Verify PGP proof.
         if attribute['attributeType'] == 'pgp-key':
-            attribute['proof_valid'] = verify_attribute_pgp_proof(attribute)
+            attribute['proof_valid'] = self.verify_attribute_pgp_proof(attribute)
 
         # Set proof validity to unknown if the attribute has a proof but we did not know how to process it.
         if attribute['has_proof'] and 'proof_valid' not in attribute:
@@ -197,7 +197,7 @@ class Events(object):
 
         return attribute
 
-    def verify_attribute_pgp_proof(attribute):
+    def verify_attribute_pgp_proof(self, attribute):
         """
         Verify the PGP proof of an attribute.
 

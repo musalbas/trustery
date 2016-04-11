@@ -79,7 +79,7 @@ def process_proof(data):
     key = ''
     signature = ''
     address = ''
-    key_mode = True
+    key_mode = False
     signature_mode = False
     for line in data.split('\n'):
         line = line.strip()

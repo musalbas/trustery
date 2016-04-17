@@ -206,9 +206,12 @@ def retrieve(attributeid):
 @click.option('--owner', help='Attribute owner', type=STR)
 def search(attributetype, identifier, owner):
     """Search for attributes."""
-    # Fill hex-encoded identifiers with zeros.
-    if identifier is not None and identifier.startswith('0x'):
-        identifier = identifier.ljust(66, '0')
+    # Pad identifiers with zeros.
+    if identifier is not None:
+        if identifier.startswith('0x'): # Hex data.
+            identifier = identifier.ljust(66, '0')
+        else:
+            identifier = identifier.ljust(32, '\x00')
 
     events = Events()
     attributes = events.filter_attributes(None, owner, identifier)

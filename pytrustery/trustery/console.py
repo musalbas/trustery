@@ -193,6 +193,7 @@ def retrieve(attributeid):
             sig_line += " [valid]"
 
         sig_line += " by " + signature['signer']
+        sig_line += (" [trusted]" if userconfig.is_trusted(attribute['owner']) else " [untrusted]")
         click.echo(sig_line)
 
     click.echo()

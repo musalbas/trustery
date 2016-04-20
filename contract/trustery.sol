@@ -48,7 +48,7 @@ contract Trustery {
     }
 
     function revokeSignature(uint signatureID) returns (uint revocationID) {
-        if (attributes[signatureID].owner == msg.sender) {
+        if (signatures[signatureID].signer == msg.sender) {
             revocationID = revocations.length++;
             Revocation revocation = revocations[revocationID];
             revocation.signatureID = signatureID;

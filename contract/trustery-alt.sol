@@ -3,9 +3,9 @@ contract Trustery {
         address signer;
     }
 
-    int public attributes;
+    uint public attributes;
     Signature[] public signatures;
-    int public revocations;
+    uint public revocations;
 
     event AttributeAdded(uint indexed attributeID, address indexed owner, string attributeType, bool has_proof, bytes32 indexed identifier, string data, string datahash);
     event AttributeSigned(uint indexed signatureID, address indexed signer, uint indexed attributeID, uint expiry);

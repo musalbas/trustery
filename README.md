@@ -1,5 +1,5 @@
 # trustery
-**Note: this is an experimental prototype and shouldn't be used in production.**
+**Note: this is an experimental prototype and shouldn't be used in production. Feedback welcome.**
 
 Trustery is a Public Key Infrastructure (PKI) and identity management system on the Ethereum blockchain.
 

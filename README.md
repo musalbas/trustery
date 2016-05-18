@@ -1,5 +1,5 @@
 # trustery
-**Note: this is a proof-of-concept prototype and shouldn't be used in production.**
+**Note: this is an experimental prototype and shouldn't be used in production.**
 
 Trustery is a Public Key Infrastructure (PKI) and identity management system on the Ethereum blockchain.
 
@@ -36,3 +36,11 @@ pip install --user --editable .
 ```
 
 You can now run the command `trustery` from the command-line.
+
+In order to use the system, you will first need to:
+* Run geth with the JSON RPC enabled.
+* Compile the smart contract at `contract/trustery-alt.sol` and change the `TRUSTERY_DEFAULT_ADDRESS` variable in `pytrustery/ethapi.py`.
+
+As this project is currently experimental, there is no official smart contract published yet. You are advised to test the smart contract on a test network.
+
+At the moment, all transactions are executed from your first Ethereum address (`eth.accounts[0]`).

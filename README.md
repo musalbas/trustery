@@ -34,3 +34,5 @@ git clone https://github.com/musalbas/trustery.git
 cd trustery/pytrustery
 pip install --user --editable .
 ```
+
+You can now run the command `trustery` from the command-line.

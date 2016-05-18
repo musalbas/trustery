@@ -39,7 +39,7 @@ You can now run the command `trustery` from the command-line.
 
 In order to use the system, you will first need to:
 * Run geth with the JSON RPC enabled.
-* Compile the smart contract at `contract/trustery-alt.sol` and change the `TRUSTERY_DEFAULT_ADDRESS` variable in `pytrustery/ethapi.py`.
+* Compile and publish the smart contract at `contract/trustery-alt.sol` and change the `TRUSTERY_DEFAULT_ADDRESS` variable in `pytrustery/ethapi.py`.
 
 As this project is currently experimental, there is no official smart contract published yet. You are advised to test the smart contract on a test network.
 

@@ -270,6 +270,24 @@ def addrsa(fingerprint):
 
 
 @cli.command()
+@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
+def ipfsaddrsa(fingerprint):
+    """Add an RSA key attribute to your identity over IPFS."""
+    rsakey = userconfig.load_rsa_key(fingerprint)
+
+    transactions = Transactions()
+    transactions.add_attribute_over_ipfs(
+        attributetype='rsakey',
+        has_proof=False,
+        identifier=fingerprint.decode('hex'),
+        data=rsakey.publickey().exportKey()
+    )
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+
+@cli.command()
 def listrsa():
     """View the list of fingerprints of stored RSA keys."""
     for fingerprint in userconfig.get_rsa_fingerprints():

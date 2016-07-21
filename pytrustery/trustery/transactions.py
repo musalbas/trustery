@@ -80,7 +80,7 @@ class Transactions(object):
         data: the data of the attribute.
         """
         #  Store the data as an IPFS block and get its key.
-        ipfs_key = ipfsclient.block_put(io.StringIO(data))['Key']
+        ipfs_key = ipfsclient.block_put(io.StringIO(unicode(data)))['Key']
 
         # Generate Trustery-specific URI for the IPFS block.
         ipfs_uri = 'ipfs-block://' + ipfs_key

@@ -10,7 +10,7 @@ contract Trustery {
     uint public revocations;
 
     event AttributeAdded(uint indexed attributeID, address indexed owner, string attributeType, bool has_proof, bytes32 indexed identifier, string data, string datahash);
-    event BlindedAttributeAdded(uint indexed blindedAttributeID, uint indexed signingAttributeID, string data, string datahash);
+    event BlindedAttributeAdded(uint indexed blindedAttributeID, address indexed owner, uint indexed signingAttributeID, string data, string datahash);
     event AttributeSigned(uint indexed signatureID, address indexed signer, uint indexed attributeID, uint expiry);
     event AttributeBlindSigned(uint indexed blindSignatureID, address indexed signer, string data, string datahash);
     event SignatureRevoked(uint indexed revocationID, uint indexed signatureID);
@@ -22,7 +22,7 @@ contract Trustery {
 
     function addBlindedAttribute(string attributeType, uint signingAttributeID, string data, string datahash) returns (uint blindedAttributeID) {
         blindedAttributeID = blindedAttributes++;
-        BlindedAttributeAdded(blindedAttributeID, signingAttributeID, data, datahash);
+        BlindedAttributeAdded(blindedAttributeID, msg.sender, signingAttributeID, data, datahash);
     }
 
     function signAttribute(uint attributeID, uint expiry) returns (uint signatureID) {

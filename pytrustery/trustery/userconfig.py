@@ -21,6 +21,8 @@ config = ConfigObj(configfile)
 # Initialise configuration.
 if 'truststore' not in config:
     config['truststore'] = {}
+if 'rsa_keys' not in config:
+    config['rsa_keys'] = []
 
 
 def trust(address):
@@ -53,3 +55,15 @@ def is_trusted(address):
 def get_trusted():
     """Return a list of trusted Ethereum addresses."""
     return config['truststore'].keys()
+
+
+def add_rsa_key(privkey):
+    """
+    Add an RSA key to the configuration.
+
+    privkey: an RSA key object containing a private key.
+
+    Returns the index of the key.
+    """
+    config['rsa_keys'].append((privkey.publickey().exportKey(), privkey.exportKey()))
+    return len(config['rsa_keys'])-1

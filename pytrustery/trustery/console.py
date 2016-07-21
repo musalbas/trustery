@@ -9,7 +9,7 @@ import click
 from trustery.consoleutil import echo_attribute_block
 from trustery.events import Events
 from trustery.transactions import Transactions
-from trustery import userconfig
+from trustery import rsakeys, userconfig
 
 
 class StrParamType(click.ParamType):
@@ -241,3 +241,11 @@ def ipfsaddpgp(keyid):
         return
 
     click.echo("Transaction sent.")
+
+
+@cli.command()
+def newrsakey():
+    """Create a new RSA key."""
+    click.echo("Generating key...")
+    keyid = userconfig.add_rsa_key(rsakeys.new_key())
+    click.echo("Key generated with ID: " + str(keyid))

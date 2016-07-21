@@ -11,6 +11,8 @@ from trustery.events import Events
 from trustery.transactions import Transactions
 from trustery import rsakeys, userconfig
 
+from Crypto.PublicKey import RSA
+
 
 class StrParamType(click.ParamType):
     """Click parameter type that converts data using str()."""
@@ -292,3 +294,17 @@ def listrsa():
     """View the list of fingerprints of stored RSA keys."""
     for fingerprint in userconfig.get_rsa_fingerprints():
         click.echo(fingerprint)
+
+
+@cli.command()
+@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
+@click.option('--signingattributeid', prompt='ID of the attribute that will sign the key', help='ID of the attribute that will sign the key', type=int)
+def addblindedrsa(fingerprint, signingattributeid):
+    """"Add a blinded RSA attribute to your identity."""
+    key = userconfig.load_rsa_key(fingerprint)
+
+    events = Events()
+    signingattribute = events.retrieve_attribute(signingattributeid)
+    signingkey = RSA.importKey(signingattribute['data'])
+
+    print rsakeys.generate_blinded_key_data(key, signingkey)

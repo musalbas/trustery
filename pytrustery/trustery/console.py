@@ -244,8 +244,33 @@ def ipfsaddpgp(keyid):
 
 
 @cli.command()
-def newrsakey():
+def newrsa():
     """Create a new RSA key."""
     click.echo("Generating key...")
     keyid = userconfig.add_rsa_key(rsakeys.new_key())
     click.echo("Key generated with ID: " + str(keyid))
+
+
+@cli.command()
+@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
+def addrsa(fingerprint):
+    """Add an RSA key attribute to your identity."""
+    rsakey = userconfig.load_rsa_key(fingerprint)
+
+    transactions = Transactions()
+    transactions.add_attribute_with_hash(
+        attributetype='rsakey',
+        has_proof=False,
+        identifier=fingerprint.decode('hex'),
+        data=rsakey.publickey().exportKey()
+    )
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+
+@cli.command()
+def listrsa():
+    """View the list of fingerprints of stored RSA keys."""
+    for fingerprint in userconfig.get_rsa_fingerprints():
+        click.echo(fingerprint)

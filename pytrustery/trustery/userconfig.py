@@ -4,6 +4,9 @@ import os
 
 from appdirs import user_config_dir
 from configobj import ConfigObj
+from Crypto.PublicKey import RSA
+
+from trustery import rsakeys
 
 # Create configuration directory in case it does not exist.
 try:
@@ -22,7 +25,7 @@ config = ConfigObj(configfile)
 if 'truststore' not in config:
     config['truststore'] = {}
 if 'rsa_keys' not in config:
-    config['rsa_keys'] = []
+    config['rsa_keys'] = {}
 
 
 def trust(address):
@@ -63,7 +66,23 @@ def add_rsa_key(privkey):
 
     privkey: an RSA key object containing a private key.
 
-    Returns the index of the key.
+    Returns the new ID of the key.
     """
-    config['rsa_keys'].append((privkey.publickey().exportKey(), privkey.exportKey()))
+    config['rsa_keys'][rsakeys.get_fingerprint(privkey)] = privkey.exportKey()
     return len(config['rsa_keys'])-1
+
+
+def load_rsa_key(fingerprint):
+    """
+    Load a stored RSA key.
+
+    keyid: the fingerprint of the key.
+
+    Returns an RSA key object.
+    """
+    return RSA.importKey(config['rsa_keys'][fingerprint])
+
+
+def get_rsa_fingerprints():
+    """Return a list of fingerprints of stored RSA keys."""
+    return config['rsa_keys'].keys()

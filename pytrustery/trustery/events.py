@@ -51,10 +51,17 @@ class Events(object):
         else:
             event_topic = self._get_event_id_by_name(event_name)
 
+        # Pad event topic.
+        event_topic = '0x' + hex(event_topic)[2:-1].rjust(64, '0')
         # Prepent the event type to the topics.
         topics = [event_topic] + topics
         # Encode topics to be sent to the Ethereum client.
         topics = [encode_api_data(topic) for topic in topics]
+
+        # Pad topics.
+        for index, topic in enumerate(topics):
+            if topic is not None:
+                topics[index] = topic.ljust(66, '0')
 
         # Get logs from Ethereum client.
         logs = ethclient.get_logs(

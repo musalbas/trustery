@@ -55,7 +55,6 @@ class Events(object):
         topics = [event_topic] + topics
         # Encode topics to be sent to the Ethereum client.
         topics = [encode_api_data(topic, padding=32) for topic in topics]
-        print topics
 
         # Get logs from Ethereum client.
         logs = ethclient.get_logs(

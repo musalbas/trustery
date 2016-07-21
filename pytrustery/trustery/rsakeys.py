@@ -1,4 +1,5 @@
 """Functions for processing RSA keys."""
+import base64
 from random import SystemRandom
 
 from Crypto.PublicKey import RSA
@@ -39,5 +40,6 @@ def generate_blinded_key_data(key, signingkey):
 
     # Blind message.
     message = signingkey.blind(message, r)
+    message = base64.b64encode(message)
 
     return (message, r)

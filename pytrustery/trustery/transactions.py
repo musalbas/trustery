@@ -74,7 +74,7 @@ class Transactions(object):
         """
         Send a transaction to add an identity attribute, storing the data on IPFS first.
 
-        attributetype: the type of address.
+        attributetype: the type of attribute.
         has_proof: True if the attribute has a cryptographic proof, otherwise False.
         identifier: the indexable identifier of the attribute.
         data: the data of the attribute.
@@ -87,6 +87,48 @@ class Transactions(object):
 
         # Add the attribute.
         self.add_attribute(attributetype, has_proof, identifier, ipfs_uri, datahash='')
+
+    def add_blinded_attribute(self, attributeType, signingAttributeID, data, datahash):
+        """
+        Send a transaction to add a blinded key attribute.
+
+        attributetype: the type of attribute.
+        signingAttributeID: the ID of the attribute that will sign this attribute.
+        data: the blinded data of the attribute.
+        datahash: the Keccak hash of the data of the attribute if it is stored off-blockchain.
+        """
+        args = [attributeType, signingAttributeID, data, datahash]
+        data = self._contracttranslator.encode('addBlindedAttribute', args)
+        return self._send_transaction(data)
+
+    def add_blinded_attribute_with_hash(self, attributeType, signingAttributeID, data):
+        """
+        Send a transaction to add a blinded key attribute, automatically calculating its datahash if the data is stored remotely.
+
+        attributetype: the type of attribute.
+        signingAttributeID: the ID of the attribute that will sign this attribute.
+        data: the blinded data of the attribute.
+        """
+        datahash = '' # TODO calculate hash for remotely stored data
+        return self.add_blinded_attribute(attributeType, signingAttributeID, data, datahash)
+
+    def add_blinded_attribute_over_ipfs(self, attributeType, signingAttributeID, data):
+        """
+        Send a transaction to add a blinded key attribute, storing the data on IPFS first.
+
+        attributetype: the type of attribute.
+        signingAttributeID: the ID of the attribute that will sign this attribute.
+        data: the blinded data of the attribute.
+        datahash: the Keccak hash of the data of the attribute if it is stored off-blockchain.
+        """
+        #  Store the data as an IPFS block and get its key.
+        ipfs_key = ipfsclient.block_put(io.StringIO(unicode(data)))['Key']
+
+        # Generate Trustery-specific URI for the IPFS block.
+        ipfs_uri = 'ipfs-block://' + ipfs_key
+
+        # Add the attribute.
+        self.add_blinded_attribute(attributeType, signingAttributeID, ipfs_uri, datahash='')
 
     def add_pgp_attribute_over_ipfs(self, keyid):
         """

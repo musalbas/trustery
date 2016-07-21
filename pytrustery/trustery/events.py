@@ -86,6 +86,15 @@ class Events(object):
         """
         return self._get_logs([attributeID, owner, identifier], event_name='AttributeAdded')
 
+    def filter_blinded_attributes(self, attributeID=None, owner=None):
+        """
+        Filter and retrieve blinded attributes.
+
+        attributeID: the ID of the attribute.
+        owner: the Ethereum address that owns the attributes.
+        """
+        return self._get_logs([attributeID, owner], event_name='BlindedAttributeAdded')
+
     def filter_signatures(self, signatureID=None, signer=None, attributeID=None):
         """
         Filter and retrieve signatures.

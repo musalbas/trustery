@@ -230,6 +230,23 @@ def search(attributetype, identifier, owner):
 
 
 @cli.command()
+@click.option('--attributetype', help='Attribute type', type=STR)
+@click.option('--owner', help='Attribute owner', type=STR)
+def searchblinded(attributetype, owner):
+    """Search for blinded attributes."""
+    events = Events()
+    attributes = events.filter_blinded_attributes(None, owner)
+    print attributes
+
+    for attribute in attributes:
+        if attributetype is not None and attributetype != attribute['attributeType']:
+            continue
+
+        echo_attribute_block(attribute)
+        click.echo()
+
+
+@cli.command()
 @click.option('--keyid', prompt='Key ID', help='Key ID', type=STR)
 def ipfsaddpgp(keyid):
     """Add a PGP key attribute to your identity over IPFS."""
@@ -300,11 +317,41 @@ def listrsa():
 @click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
 @click.option('--signingattributeid', prompt='ID of the attribute that will sign the key', help='ID of the attribute that will sign the key', type=int)
 def addblindedrsa(fingerprint, signingattributeid):
-    """"Add a blinded RSA attribute to your identity."""
+    """Add a blinded RSA attribute to your identity."""
     key = userconfig.load_rsa_key(fingerprint)
 
     events = Events()
     signingattribute = events.retrieve_attribute(signingattributeid)
     signingkey = RSA.importKey(signingattribute['data'])
 
-    print rsakeys.generate_blinded_key_data(key, signingkey)
+    blindedkey, r = rsakeys.generate_blinded_key_data(key, signingkey)
+
+    userconfig.add_rsa_blinded_key_data(blindedkey, r)
+
+    transactions = Transactions()
+    transactions.add_blinded_attribute_with_hash('rsakey', signingattributeid, blindedkey)
+
+    click.echo()
+    click.echo("Transaction sent.")
+
+
+@cli.command()
+@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
+@click.option('--signingattributeid', prompt='ID of the attribute that will sign the key', help='ID of the attribute that will sign the key', type=int)
+def ipfsaddblindedrsa(fingerprint, signingattributeid):
+    """Add a blinded RSA attribute to your identity over IPFS."""
+    key = userconfig.load_rsa_key(fingerprint)
+
+    events = Events()
+    signingattribute = events.retrieve_attribute(signingattributeid)
+    signingkey = RSA.importKey(signingattribute['data'])
+
+    blindedkey, r = rsakeys.generate_blinded_key_data(key, signingkey)
+
+    userconfig.add_rsa_blinded_key_data(blindedkey, r)
+
+    transactions = Transactions()
+    transactions.add_blinded_attribute_over_ipfs('rsakey', signingattributeid, blindedkey)
+
+    click.echo()
+    click.echo("Transaction sent.")

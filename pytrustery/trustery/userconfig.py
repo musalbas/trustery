@@ -26,6 +26,8 @@ if 'truststore' not in config:
     config['truststore'] = {}
 if 'rsa_keys' not in config:
     config['rsa_keys'] = {}
+if 'rsa_blinded_keys' not in config:
+    config['rsa_blinded_keys'] = {}
 
 
 def trust(address):
@@ -86,3 +88,24 @@ def load_rsa_key(fingerprint):
 def get_rsa_fingerprints():
     """Return a list of fingerprints of stored RSA keys."""
     return config['rsa_keys'].keys()
+
+
+def add_rsa_blinded_key_data(blindedkey, r):
+    """
+    Store RSA blinded key data.
+
+    blindedkey: the data representing the blinded key.
+    r: the blinding factor.
+    """
+    config['rsa_blinded_keys'][blindedkey] = r
+
+
+def get_rsa_blinding_factor(blindedkey):
+    """
+    Get a blinded key's blinding factor.
+
+    blindedkey: the data representing the blinded key.
+
+    Returns the blinding factor.
+    """
+    return config['rsa_blinded_keys'][blindedkey]

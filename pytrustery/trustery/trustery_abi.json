@@ -245,6 +245,11 @@
                 "type": "address"
             },
             {
+                "indexed": false,
+                "name": "attributeType",
+                "type": "string"
+            },
+            {
                 "indexed": true,
                 "name": "signingAttributeID",
                 "type": "uint256"

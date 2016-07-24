@@ -288,8 +288,8 @@ def ipfsaddpgp(keyid):
 def newrsa():
     """Create a new RSA key."""
     click.echo("Generating key...")
-    keyid = userconfig.add_rsa_key(rsakeys.new_key())
-    click.echo("Key generated with ID: " + str(keyid))
+    keyfingerprint = userconfig.add_rsa_key(rsakeys.new_key())
+    click.echo("Key generated with fingerprint: " + keyfingerprint)
 
 
 @cli.command()

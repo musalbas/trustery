@@ -68,10 +68,11 @@ def add_rsa_key(privkey):
 
     privkey: an RSA key object containing a private key.
 
-    Returns the new ID of the key.
+    Returns the fingerprint of the key.
     """
-    config['rsa_keys'][rsakeys.get_fingerprint(privkey)] = privkey.exportKey()
-    return len(config['rsa_keys'])-1
+    fingerprint = rsakeys.get_fingerprint(privkey)
+    config['rsa_keys'][fingerprint] = privkey.exportKey()
+    return fingerprint
 
 
 def load_rsa_key(fingerprint):

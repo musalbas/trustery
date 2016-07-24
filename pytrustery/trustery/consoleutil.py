@@ -19,7 +19,7 @@ def echo_attribute_block(attribute, signatures_status=None):
     if 'blindedAttributeID' in attribute:
         click.echo("Blinded attribute ID #" + str(attribute['blindedAttributeID']) + ':')
     if 'signingAttributeID' in attribute:
-        click.echo("\tSigning attribute ID: " + str(attribute['signingAttributeID']) + ':')
+        click.echo("\tSigning attribute ID: " + str(attribute['signingAttributeID']) + '.')
     click.echo("\tType: " + attribute['attributeType'])
     click.echo("\tOwner: " + attribute['owner']
         + (" [trusted]" if userconfig.is_trusted(attribute['owner']) else " [untrusted]"))

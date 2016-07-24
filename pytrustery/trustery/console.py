@@ -258,7 +258,6 @@ def searchblinded(attributetype, owner):
     """Search for blinded attributes."""
     events = Events()
     attributes = events.filter_blinded_attributes(None, owner)
-    print attributes
 
     for attribute in attributes:
         if attributetype is not None and attributetype != attribute['attributeType']:

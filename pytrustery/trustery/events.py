@@ -86,14 +86,29 @@ class Events(object):
         """
         return self._get_logs([attributeID, owner, identifier], event_name='AttributeAdded')
 
-    def filter_blinded_attributes(self, attributeID=None, owner=None):
+    def filter_blinded_attributes(self, blindedAttributeID=None, owner=None):
         """
         Filter and retrieve blinded attributes.
 
         attributeID: the ID of the attribute.
         owner: the Ethereum address that owns the attributes.
         """
-        return self._get_logs([attributeID, owner], event_name='BlindedAttributeAdded')
+        return self._get_logs([blindedAttributeID, owner], event_name='BlindedAttributeAdded')
+
+    def retrieve_blinded_attribute(self, blindedAttributeID=None):
+        """
+        Retrieve a blinded key attribute, downloading off-blockchain data if necessary.
+
+        blindedAttributeID: the ID of the blinded attribute.
+        """
+        attribute = self.filter_blinded_attributes(blindedAttributeID)[0]
+
+        # Download IPFS data if necessary.
+        if attribute['data'].startswith('ipfs-block://'):
+            ipfs_key = attribute['data'][len('ipfs-block://'):]
+            attribute['data'] = ipfsclient.block_get(ipfs_key)
+
+        return attribute
 
     def filter_signatures(self, signatureID=None, signer=None, attributeID=None):
         """

@@ -151,7 +151,7 @@ class Transactions(object):
 
     def sign_attribute(self, attributeID, expiry):
         """
-        Send a transaction to sign an identity attriute.
+        Send a transaction to sign an identity attribute.
 
         attributeID: the ID of the attribute.
         expiry: the expiry time of the attriute.
@@ -159,6 +159,44 @@ class Transactions(object):
         args = [attributeID, expiry]
         data = self._contracttranslator.encode('signAttribute', args)
         return self._send_transaction(data)
+
+    def sign_blinded_attribute(self, blindedAttributeID, data, datahash):
+        """
+        Send a transaction to sign a blinded identity attribute.
+
+        attributeID: the ID of the attribute.
+        data: the data of the signature.
+        datahash: the hash of the signature data if it is stored remotely.
+        """
+        args = [blindedAttributeID]
+        data = self._contracttranslator.encode('signBlindedAttribute', args)
+        return self._send_transaction(data)
+
+    def sign_blinded_attribute_with_hash(self, blindedAttributeID, data):
+        """
+        Send a transaction to sign a blinded identity attribute, automatically calculating its datahash if the data is stored remotely.
+
+        attributetype: the type of attribute.
+        data: the data of the signature.
+        """
+        datahash = '' # TODO calculate hash for remotely stored data
+        return self.sign_blinded_attribute(blindedAttributeID, data, datahash)
+
+    def sign_blinded_attribute_over_ipfs(self, blindedAttributeID, data):
+        """
+        Send a transaction to sign a blinded identity attribute, storing the data on IPFS first.
+
+        attributetype: the type of attribute.
+        data: the data of the signature.
+        """
+        #  Store the data as an IPFS block and get its key.
+        ipfs_key = ipfsclient.block_put(io.StringIO(unicode(data)))['Key']
+
+        # Generate Trustery-specific URI for the IPFS block.
+        ipfs_uri = 'ipfs-block://' + ipfs_key
+
+        # Add the attribute signature.
+        self.sign_blinded_attribute(blindedAttributeID, ipfs_uri, datahash='')
 
     def revoke_signature(self, signatureID):
         """

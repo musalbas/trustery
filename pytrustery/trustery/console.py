@@ -1,6 +1,7 @@
 """Console application for Trustery."""
 
 import atexit
+import binascii
 import logging
 import time
 
@@ -43,6 +44,36 @@ def _addblindedrsa(fingerprint, signingattributeid, ipfs=False):
         transactions.add_blinded_attribute_with_hash('rsakey', signingattributeid, blindedkey)
 
     click.echo()
+    click.echo("Transaction sent.")
+
+
+def _signblindedrsa(blindedattributeid, ipfs=False):
+    click.echo()
+
+    events = Events()
+    try:
+        blindedattribute = events.retrieve_blinded_attribute(blindedAttributeID=blindedattributeid)
+    except IndexError:
+        click.echo("Error: No such attribute.")
+        return
+
+    signingattribute = events.filter_attributes(attributeID=blindedattribute['signingAttributeID'])[0]
+    hexfingerprint = binascii.hexlify(signingattribute['identifier'])
+
+    try:
+        signingkey = userconfig.load_rsa_key(hexfingerprint)
+    except KeyError:
+        click.echo("Error: You do not have the private key for the target signing key of this blinded attribute.")
+        return
+
+    signature = rsakeys.sign_blinded_key(blindedattribute['data'], signingkey)
+
+    transactions = Transactions()
+    if ipfs:
+        transactions.sign_blinded_attribute_over_ipfs(blindedattributeid, signature)
+    else:
+        transactions.sign_blinded_attribute_with_hash(blindedattributeid, signature)
+
     click.echo("Transaction sent.")
 
 
@@ -132,6 +163,20 @@ def sign(attributeid, expires):
 
     click.echo()
     click.echo("Transaction sent.")
+
+
+@cli.command()
+@click.option('--blindedattributeid', prompt='Blinded attribute ID', help='Blinded attribute ID', type=int)
+def signblindedrsa(blindedattributeid):
+    """Sign a blinded RSA attribute."""
+    _signblindedrsa(blindedattributeid)
+
+
+@cli.command()
+@click.option('--blindedattributeid', prompt='Blinded attribute ID', help='Blinded attribute ID', type=int)
+def ipfssignblindedrsa(blindedattributeid):
+    """Sign a blinded RSA attribute over IPFS."""
+    _signblindedrsa(blindedattributeid, ipfs=True)
 
 
 @cli.command()

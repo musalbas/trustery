@@ -43,3 +43,20 @@ def generate_blinded_key_data(key, signingkey):
     message = base64.b64encode(message)
 
     return (message, r)
+
+
+def sign_blinded_key(keydata, signingkey):
+    """
+    Sign a blinded RSA key.
+
+    keydata: the blinded RSA key data.
+    signingkey: the RSA key object of the signing authority.
+
+    Returns the signature.
+    """
+    rawblindedkey = base64.b64decode(keydata)
+    signature = signingkey.sign(rawblindedkey, 0)[0]
+    signature = hex(signature)[2:-1].decode('hex')
+    signature = base64.b64encode(signature)
+
+    return signature

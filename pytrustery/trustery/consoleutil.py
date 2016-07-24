@@ -11,14 +11,20 @@ def echo_attribute_block(attribute, signatures_status=None):
         signatures_status = attribute['signatures_status']
 
     # Encode attribute identifier as hex if it contains non-ASCII characters.
-    if not all(ord(c) < 128 for c in attribute['identifier']):
+    if 'identifer' in attribute and not all(ord(c) < 128 for c in attribute['identifier']):
         attribute['identifier'] = '0x' + attribute['identifier'].rstrip('\x00').encode('hex')
 
-    click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
+    if 'attributeID' in attribute:
+        click.echo("Attribute ID #" + str(attribute['attributeID']) + ':')
+    if 'blindedAttributeID' in attribute:
+        click.echo("Blinded attribute ID #" + str(attribute['blindedAttributeID']) + ':')
+    if 'signingAttributeID' in attribute:
+        click.echo("\tSigning attribute ID: " + str(attribute['signingAttributeID']) + '.')
     click.echo("\tType: " + attribute['attributeType'])
     click.echo("\tOwner: " + attribute['owner']
         + (" [trusted]" if userconfig.is_trusted(attribute['owner']) else " [untrusted]"))
-    click.echo("\tIdentifier: " + attribute['identifier'])
+    if 'identifer' in attribute:
+        click.echo("\tIdentifier: " + attribute['identifier'])
 
     if signatures_status is not None:
         valid_signatures = signatures_status['status']['valid']

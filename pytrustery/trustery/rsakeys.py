@@ -60,3 +60,19 @@ def sign_blinded_key(keydata, signingkey):
     signature = base64.b64encode(signature)
 
     return signature
+
+def unblind_signature(signature, blindingfactor, signingkey):
+    """
+    Unblind a blind RSA signature.
+
+    signature: the blind signature.
+    blindingfactor: the blinding factor.
+    """
+    signature = base64.b64decode(signature)
+    signature = long(signature.encode('hex'), 16)
+
+    unblindedsignature = signingkey.unblind(signature, blindingfactor)
+    unblindedsignature = hex(unblindedsignature)[2:-1].decode('hex')
+    unblindedsignature = base64.b64encode(unblindedsignature)
+
+    return unblindedsignature

@@ -168,7 +168,7 @@ class Transactions(object):
         data: the data of the signature.
         datahash: the hash of the signature data if it is stored remotely.
         """
-        args = [blindedAttributeID]
+        args = [blindedAttributeID, data, datahash]
         data = self._contracttranslator.encode('signBlindedAttribute', args)
         return self._send_transaction(data)
 

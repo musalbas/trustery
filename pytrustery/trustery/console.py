@@ -425,3 +425,30 @@ def addblindedrsa(fingerprint, signingattributeid):
 def ipfsaddblindedrsa(fingerprint, signingattributeid):
     """Add a blinded RSA attribute to your identity over IPFS."""
     _addblindedrsa(fingerprint, signingattributeid, ipfs=True)
+
+
+@cli.command()
+@click.option('--blindsignatureid', prompt='Blind signature ID', help='Blind signature ID', type=int)
+def unblindrsa(blindsignatureid):
+    """Unblind a blinded RSA signature."""
+    click.echo()
+
+    events = Events()
+    try:
+        signature = events.retrieve_blind_signature(blindsignatureid)
+    except IndexError:
+        click.echo("Error: No such signature.")
+        return
+
+    attribute = events.retrieve_blinded_attribute(signature['blindedAttributeID'])
+    signingattribute = events.retrieve_attribute(attribute['signingAttributeID'])
+    signingkey = RSA.importKey(signingattribute['data'])
+
+    try:
+        blindingfactor = userconfig.get_rsa_blinding_factor(attribute['data'])
+    except KeyError:
+        click.echo("Error: You do not have the blinding factor for this signature.")
+        return
+
+    unblindedsignature = rsakeys.unblind_signature(signature['data'], blindingfactor, signingkey)
+    click.echo("Unblinded signature: " + unblindedsignature)

@@ -110,6 +110,21 @@ class Events(object):
 
         return attribute
 
+    def retrieve_blind_signature(self, blindedSignatureID=None):
+        """
+        Retrieve a blinded signature, downloading off-blockchain data if necessary.
+
+        blindedSignatureID: the ID of the blinded signature.
+        """
+        signature = self.filter_blind_signatures(blindedSignatureID)[0]
+
+        # Download IPFS data if necessary.
+        if signature['data'].startswith('ipfs-block://'):
+            ipfs_key = signature['data'][len('ipfs-block://'):]
+            signature['data'] = ipfsclient.block_get(ipfs_key)
+
+        return signature
+
     def filter_signatures(self, signatureID=None, signer=None, attributeID=None):
         """
         Filter and retrieve signatures.

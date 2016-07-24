@@ -98,6 +98,7 @@ def add_rsa_blinded_key_data(blindedkey, r):
     blindedkey: the data representing the blinded key.
     r: the blinding factor.
     """
+    blindedkey = blindedkey.replace('=', '-')
     config['rsa_blinded_keys'][blindedkey] = r
 
 
@@ -109,4 +110,5 @@ def get_rsa_blinding_factor(blindedkey):
 
     Returns the blinding factor.
     """
-    return config['rsa_blinded_keys'][blindedkey]
+    blindedkey = blindedkey.replace('=', '-')
+    return int(config['rsa_blinded_keys'][blindedkey])

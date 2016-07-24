@@ -271,6 +271,35 @@ def retrieve(attributeid):
 
 
 @cli.command()
+@click.option('--blindedattributeid', prompt='Blinded attribute ID', help='Blinded attribute ID', type=int)
+def retrieveblinded(blindedattributeid):
+    """Retrieve a blinded attribute."""
+    events = Events()
+    attribute = events.retrieve_blinded_attribute(blindedattributeid)
+
+    if attribute is None:
+        click.echo("No such attribute.")
+        return
+
+    click.echo()
+
+    echo_attribute_block(attribute)
+    click.echo()
+
+    click.echo("Blind signatures for blinded attribute ID #" + str(attribute['blindedAttributeID']) + ':')
+    for signature in events.filter_blind_signatures(blindedAttributeID=blindedattributeid):
+        sig_line = "\t#" + str(signature['blindSignatureID'])
+
+        sig_line += " by " + signature['signer']
+        sig_line += (" [trusted]" if userconfig.is_trusted(attribute['owner']) else " [untrusted]")
+        click.echo(sig_line)
+
+    click.echo()
+    click.echo("--ATTRIBUTE DATA:")
+    click.echo(attribute['data'])
+
+
+@cli.command()
 @click.option('--attributetype', help='Attribute type', type=STR)
 @click.option('--identifier', help='Attribute identifier', type=STR)
 @click.option('--owner', help='Attribute owner', type=STR)

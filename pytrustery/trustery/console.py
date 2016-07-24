@@ -34,7 +34,7 @@ def _addblindedrsa(fingerprint, signingattributeid, ipfs=False):
 
     blindedkey, r = rsakeys.generate_blinded_key_data(key, signingkey)
 
-    userconfig.add_rsa_blinded_key_data(blindedkey, r)
+    userconfig.add_rsa_blinded_key_data(key, blindedkey, r)
 
     transactions = Transactions()
 
@@ -452,3 +452,21 @@ def unblindrsa(blindsignatureid):
 
     unblindedsignature = rsakeys.unblind_signature(signature['data'], blindingfactor, signingkey)
     click.echo("Unblinded signature: " + unblindedsignature)
+    click.echo("Attribute ID of signer: " + str(attribute['signingAttributeID']))
+
+    unblindedkey = userconfig.get_rsa_unblinded_key(attribute['data'])
+
+    verify = rsakeys.verify_blind_key_signature(
+        unblindedsignature,
+        unblindedkey,
+        signingkey,
+    )
+
+    if verify:
+        click.echo("Verification successful: Yes")
+    else:
+        click.echo("Verification successful: No")
+
+    click.echo()
+    click.echo("--PUBLIC KEY:")
+    click.echo(unblindedkey.publickey().exportKey())

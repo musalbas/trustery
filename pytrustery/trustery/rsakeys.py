@@ -61,6 +61,7 @@ def sign_blinded_key(keydata, signingkey):
 
     return signature
 
+
 def unblind_signature(signature, blindingfactor, signingkey):
     """
     Unblind a blind RSA signature.
@@ -76,3 +77,20 @@ def unblind_signature(signature, blindingfactor, signingkey):
     unblindedsignature = base64.b64encode(unblindedsignature)
 
     return unblindedsignature
+
+
+def verify_blind_key_signature(signature, unblindedkey, signingkey):
+    """
+    Verify an RSA blind signature of an RSA key.
+
+    signature: the signature.
+    unblindedkey: the original unblinded RSA key object.
+    signingkey: the RSA public key object of the signer.
+
+    Return true if the signature is valid.
+    """
+    signature = base64.b64decode(signature)
+    signature = long(signature.encode('hex'), 16)
+    message = unblindedkey.publickey().exportKey(format='DER')
+    message = SHA256.new(message).digest()
+    return signingkey.verify(message, (signature,))

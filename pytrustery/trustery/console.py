@@ -263,6 +263,9 @@ def searchblinded(attributetype, owner):
         if attributetype is not None and attributetype != attribute['attributeType']:
             continue
 
+        signatures = len(events.filter_blinded_attributes(blindedAttributeID=attribute['blindedAttributeID']))
+        click.echo("\t[" + str(sigs) + " valid signature" + ("]" if signatures == 1 else "s]"))
+
         echo_attribute_block(attribute)
         click.echo()
 

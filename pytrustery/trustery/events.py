@@ -105,7 +105,7 @@ class Events(object):
         """
         return self._get_logs([signatureID, signer, attributeID], event_name='AttributeSigned')
 
-    def filter_blind_signatures(self, blindSignatureID=None, signer=None, blindAttributeID=None):
+    def filter_blind_signatures(self, blindSignatureID=None, signer=None, blindedAttributeID=None):
         """
         Filter and retrieve blind signatures.
 
@@ -113,7 +113,7 @@ class Events(object):
         signer: the Ethereum address that owns the signature.
         attributeID: the ID of the attribute.
         """
-        return self._get_logs([blindSignatureID, signer, blindAttributeID], event_name='AttributeBlindSigned')
+        return self._get_logs([blindSignatureID, signer, blindedAttributeID], event_name='AttributeBlindSigned')
 
     def filter_revocations(self, revocationID=None, signatureID=None):
         """

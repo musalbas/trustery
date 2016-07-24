@@ -12,7 +12,7 @@ contract Trustery {
     event AttributeAdded(uint indexed attributeID, address indexed owner, string attributeType, bool has_proof, bytes32 indexed identifier, string data, string datahash);
     event BlindedAttributeAdded(uint indexed blindedAttributeID, address indexed owner, string attributeType, uint indexed signingAttributeID, string data, string datahash);
     event AttributeSigned(uint indexed signatureID, address indexed signer, uint indexed attributeID, uint expiry);
-    event AttributeBlindSigned(uint indexed blindSignatureID, address indexed signer, uint indexed attributeID, string data, string datahash);
+    event AttributeBlindSigned(uint indexed blindSignatureID, address indexed signer, uint indexed blindAttributeID, string data, string datahash);
     event SignatureRevoked(uint indexed revocationID, uint indexed signatureID);
 
     function addAttribute(string attributeType, bool has_proof, bytes32 identifier, string data, string datahash) returns (uint attributeID) {
@@ -32,9 +32,9 @@ contract Trustery {
         AttributeSigned(signatureID, msg.sender, attributeID, expiry);
     }
 
-    function signBlindedAttribute(uint attributeID, string data, string datahash) returns (uint blindSignatureID) {
+    function signBlindedAttribute(uint blindAttributeID, string data, string datahash) returns (uint blindSignatureID) {
         blindSignatureID = blindSignatures++;
-        AttributeBlindSigned(blindSignatureID, msg.sender, attributeID, data, datahash);
+        AttributeBlindSigned(blindSignatureID, msg.sender, blindAttributeID, data, datahash);
     }
 
     function revokeSignature(uint signatureID) returns (uint revocationID) {

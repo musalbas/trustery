@@ -156,7 +156,7 @@
         "constant": false,
         "inputs": [
             {
-                "name": "attributeID",
+                "name": "blindAttributeID",
                 "type": "uint256"
             },
             {
@@ -307,6 +307,11 @@
                 "indexed": true,
                 "name": "signer",
                 "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "blindAttributeID",
+                "type": "uint256"
             },
             {
                 "indexed": false,

@@ -1,7 +1,6 @@
 """Console application for Trustery."""
 
 import atexit
-import binascii
 import logging
 import time
 
@@ -10,9 +9,7 @@ import click
 from trustery.consoleutil import echo_attribute_block
 from trustery.events import Events
 from trustery.transactions import Transactions
-from trustery import rsakeys, userconfig
-
-from Crypto.PublicKey import RSA
+from trustery import userconfig
 
 
 class StrParamType(click.ParamType):
@@ -23,58 +20,6 @@ class StrParamType(click.ParamType):
         return str(value)
 
 STR = StrParamType()
-
-
-def _addblindedrsa(fingerprint, signingattributeid, ipfs=False):
-    key = userconfig.load_rsa_key(fingerprint)
-
-    events = Events()
-    signingattribute = events.retrieve_attribute(signingattributeid)
-    signingkey = RSA.importKey(signingattribute['data'])
-
-    blindedkey, r = rsakeys.generate_blinded_key_data(key, signingkey)
-
-    userconfig.add_rsa_blinded_key_data(key, blindedkey, r)
-
-    transactions = Transactions()
-
-    if ipfs:
-        transactions.add_blinded_attribute_over_ipfs('rsakey', signingattributeid, blindedkey)
-    else:
-        transactions.add_blinded_attribute_with_hash('rsakey', signingattributeid, blindedkey)
-
-    click.echo()
-    click.echo("Transaction sent.")
-
-
-def _signblindedrsa(blindedattributeid, ipfs=False):
-    click.echo()
-
-    events = Events()
-    try:
-        blindedattribute = events.retrieve_blinded_attribute(blindedAttributeID=blindedattributeid)
-    except IndexError:
-        click.echo("Error: No such attribute.")
-        return
-
-    signingattribute = events.filter_attributes(attributeID=blindedattribute['signingAttributeID'])[0]
-    hexfingerprint = binascii.hexlify(signingattribute['identifier'])
-
-    try:
-        signingkey = userconfig.load_rsa_key(hexfingerprint)
-    except KeyError:
-        click.echo("Error: You do not have the private key for the target signing key of this blinded attribute.")
-        return
-
-    signature = rsakeys.sign_blinded_key(blindedattribute['data'], signingkey)
-
-    transactions = Transactions()
-    if ipfs:
-        transactions.sign_blinded_attribute_over_ipfs(blindedattributeid, signature)
-    else:
-        transactions.sign_blinded_attribute_with_hash(blindedattributeid, signature)
-
-    click.echo("Transaction sent.")
 
 
 @click.group()
@@ -163,20 +108,6 @@ def sign(attributeid, expires):
 
     click.echo()
     click.echo("Transaction sent.")
-
-
-@cli.command()
-@click.option('--blindedattributeid', prompt='Blinded attribute ID', help='Blinded attribute ID', type=int)
-def signblindedrsa(blindedattributeid):
-    """Sign a blinded RSA attribute."""
-    _signblindedrsa(blindedattributeid)
-
-
-@cli.command()
-@click.option('--blindedattributeid', prompt='Blinded attribute ID', help='Blinded attribute ID', type=int)
-def ipfssignblindedrsa(blindedattributeid):
-    """Sign a blinded RSA attribute over IPFS."""
-    _signblindedrsa(blindedattributeid, ipfs=True)
 
 
 @cli.command()
@@ -271,35 +202,6 @@ def retrieve(attributeid):
 
 
 @cli.command()
-@click.option('--blindedattributeid', prompt='Blinded attribute ID', help='Blinded attribute ID', type=int)
-def retrieveblinded(blindedattributeid):
-    """Retrieve a blinded attribute."""
-    events = Events()
-    attribute = events.retrieve_blinded_attribute(blindedattributeid)
-
-    if attribute is None:
-        click.echo("No such attribute.")
-        return
-
-    click.echo()
-
-    echo_attribute_block(attribute)
-    click.echo()
-
-    click.echo("Blind signatures for blinded attribute ID #" + str(attribute['blindedAttributeID']) + ':')
-    for signature in events.filter_blind_signatures(blindedAttributeID=blindedattributeid):
-        sig_line = "\t#" + str(signature['blindSignatureID'])
-
-        sig_line += " by " + signature['signer']
-        sig_line += (" [trusted]" if userconfig.is_trusted(attribute['owner']) else " [untrusted]")
-        click.echo(sig_line)
-
-    click.echo()
-    click.echo("--ATTRIBUTE DATA:")
-    click.echo(attribute['data'])
-
-
-@cli.command()
 @click.option('--attributetype', help='Attribute type', type=STR)
 @click.option('--identifier', help='Attribute identifier', type=STR)
 @click.option('--owner', help='Attribute owner', type=STR)
@@ -326,25 +228,6 @@ def search(attributetype, identifier, owner):
 
 
 @cli.command()
-@click.option('--attributetype', help='Attribute type', type=STR)
-@click.option('--owner', help='Attribute owner', type=STR)
-def searchblinded(attributetype, owner):
-    """Search for blinded attributes."""
-    events = Events()
-    attributes = events.filter_blinded_attributes(None, owner)
-
-    for attribute in attributes:
-        if attributetype is not None and attributetype != attribute['attributeType']:
-            continue
-
-        signatures = len(events.filter_blind_signatures(blindedAttributeID=attribute['blindedAttributeID']))
-
-        echo_attribute_block(attribute)
-        click.echo("\t[" + str(signatures) + " blind signature" + ("]" if signatures == 1 else "s]"))
-        click.echo()
-
-
-@cli.command()
 @click.option('--keyid', prompt='Key ID', help='Key ID', type=STR)
 def ipfsaddpgp(keyid):
     """Add a PGP key attribute to your identity over IPFS."""
@@ -358,115 +241,3 @@ def ipfsaddpgp(keyid):
         return
 
     click.echo("Transaction sent.")
-
-
-@cli.command()
-def newrsa():
-    """Create a new RSA key."""
-    click.echo("Generating key...")
-    keyfingerprint = userconfig.add_rsa_key(rsakeys.new_key())
-    click.echo("Key generated with fingerprint: " + keyfingerprint)
-
-
-@cli.command()
-@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
-def addrsa(fingerprint):
-    """Add an RSA key attribute to your identity."""
-    rsakey = userconfig.load_rsa_key(fingerprint)
-
-    transactions = Transactions()
-    transactions.add_attribute_with_hash(
-        attributetype='rsakey',
-        has_proof=False,
-        identifier=fingerprint.decode('hex'),
-        data=rsakey.publickey().exportKey()
-    )
-
-    click.echo()
-    click.echo("Transaction sent.")
-
-
-@cli.command()
-@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
-def ipfsaddrsa(fingerprint):
-    """Add an RSA key attribute to your identity over IPFS."""
-    rsakey = userconfig.load_rsa_key(fingerprint)
-
-    transactions = Transactions()
-    transactions.add_attribute_over_ipfs(
-        attributetype='rsakey',
-        has_proof=False,
-        identifier=fingerprint.decode('hex'),
-        data=rsakey.publickey().exportKey()
-    )
-
-    click.echo()
-    click.echo("Transaction sent.")
-
-
-@cli.command()
-def listrsa():
-    """View the list of fingerprints of stored RSA keys."""
-    for fingerprint in userconfig.get_rsa_fingerprints():
-        click.echo(fingerprint)
-
-
-@cli.command()
-@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
-@click.option('--signingattributeid', prompt='ID of the attribute that will sign the key', help='ID of the attribute that will sign the key', type=int)
-def addblindedrsa(fingerprint, signingattributeid):
-    """Add a blinded RSA attribute to your identity."""
-    _addblindedrsa(fingerprint, signingattributeid)
-
-
-@cli.command()
-@click.option('--fingerprint', prompt='Key fingerprint', help='Key fingerprint', type=STR)
-@click.option('--signingattributeid', prompt='ID of the attribute that will sign the key', help='ID of the attribute that will sign the key', type=int)
-def ipfsaddblindedrsa(fingerprint, signingattributeid):
-    """Add a blinded RSA attribute to your identity over IPFS."""
-    _addblindedrsa(fingerprint, signingattributeid, ipfs=True)
-
-
-@cli.command()
-@click.option('--blindsignatureid', prompt='Blind signature ID', help='Blind signature ID', type=int)
-def unblindrsa(blindsignatureid):
-    """Unblind a blinded RSA signature."""
-    click.echo()
-
-    events = Events()
-    try:
-        signature = events.retrieve_blind_signature(blindsignatureid)
-    except IndexError:
-        click.echo("Error: No such signature.")
-        return
-
-    attribute = events.retrieve_blinded_attribute(signature['blindedAttributeID'])
-    signingattribute = events.retrieve_attribute(attribute['signingAttributeID'])
-    signingkey = RSA.importKey(signingattribute['data'])
-
-    try:
-        blindingfactor = userconfig.get_rsa_blinding_factor(attribute['data'])
-    except KeyError:
-        click.echo("Error: You do not have the blinding factor for this signature.")
-        return
-
-    unblindedsignature = rsakeys.unblind_signature(signature['data'], blindingfactor, signingkey)
-    click.echo("Unblinded signature: " + unblindedsignature)
-    click.echo("Attribute ID of signer: " + str(attribute['signingAttributeID']))
-
-    unblindedkey = userconfig.get_rsa_unblinded_key(attribute['data'])
-
-    verify = rsakeys.verify_blind_key_signature(
-        unblindedsignature,
-        unblindedkey,
-        signingkey,
-    )
-
-    if verify:
-        click.echo("Verification successful: Yes")
-    else:
-        click.echo("Verification successful: No")
-
-    click.echo()
-    click.echo("--PUBLIC KEY:")
-    click.echo(unblindedkey.publickey().exportKey())

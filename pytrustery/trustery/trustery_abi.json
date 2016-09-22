@@ -17,18 +17,6 @@
         "type": "function"
     },
     {
-        "constant": true,
-        "inputs": [],
-        "name": "blindedAttributes",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "type": "function"
-    },
-    {
         "constant": false,
         "inputs": [
             {
@@ -51,18 +39,6 @@
     },
     {
         "constant": true,
-        "inputs": [],
-        "name": "revocations",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "type": "function"
-    },
-    {
-        "constant": true,
         "inputs": [
             {
                 "name": "",
@@ -74,17 +50,13 @@
             {
                 "name": "signer",
                 "type": "address"
-            }
-        ],
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "attributes",
-        "outputs": [
+            },
             {
-                "name": "",
+                "name": "attributeID",
+                "type": "uint256"
+            },
+            {
+                "name": "expiry",
                 "type": "uint256"
             }
         ],
@@ -124,15 +96,30 @@
         "type": "function"
     },
     {
-        "constant": false,
+        "constant": true,
         "inputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "attributes",
+        "outputs": [
+            {
+                "name": "owner",
+                "type": "address"
+            },
             {
                 "name": "attributeType",
                 "type": "string"
             },
             {
-                "name": "signingAttributeID",
-                "type": "uint256"
+                "name": "has_proof",
+                "type": "bool"
+            },
+            {
+                "name": "identifier",
+                "type": "bytes32"
             },
             {
                 "name": "data",
@@ -141,49 +128,22 @@
             {
                 "name": "datahash",
                 "type": "string"
-            }
-        ],
-        "name": "addBlindedAttribute",
-        "outputs": [
-            {
-                "name": "blindedAttributeID",
-                "type": "uint256"
-            }
-        ],
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "blindedAttributeID",
-                "type": "uint256"
-            },
-            {
-                "name": "data",
-                "type": "string"
-            },
-            {
-                "name": "datahash",
-                "type": "string"
-            }
-        ],
-        "name": "signBlindedAttribute",
-        "outputs": [
-            {
-                "name": "blindSignatureID",
-                "type": "uint256"
             }
         ],
         "type": "function"
     },
     {
         "constant": true,
-        "inputs": [],
-        "name": "blindSignatures",
-        "outputs": [
+        "inputs": [
             {
                 "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "revocations",
+        "outputs": [
+            {
+                "name": "signatureID",
                 "type": "uint256"
             }
         ],
@@ -236,43 +196,6 @@
         "inputs": [
             {
                 "indexed": true,
-                "name": "blindedAttributeID",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "name": "attributeType",
-                "type": "string"
-            },
-            {
-                "indexed": true,
-                "name": "signingAttributeID",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "name": "data",
-                "type": "string"
-            },
-            {
-                "indexed": false,
-                "name": "datahash",
-                "type": "string"
-            }
-        ],
-        "name": "BlindedAttributeAdded",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
                 "name": "signatureID",
                 "type": "uint256"
             },
@@ -293,38 +216,6 @@
             }
         ],
         "name": "AttributeSigned",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "name": "blindSignatureID",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "name": "signer",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "name": "blindedAttributeID",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "name": "data",
-                "type": "string"
-            },
-            {
-                "indexed": false,
-                "name": "datahash",
-                "type": "string"
-            }
-        ],
-        "name": "AttributeBlindSigned",
         "type": "event"
     },
     {

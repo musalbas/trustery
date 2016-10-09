@@ -5,7 +5,7 @@ Trustery is a Public Key Infrastructure (PKI) and identity management system on 
 
 The aim of this project is to provide a PKI that has built-in certificate transparency to make it easy to detect rogue certificates, by building an alternative to decentralized PKI by using a public-ledgered web-of-trust model for fine-grained identity management.
 
-[A full report is available here.](https://github.com/musalbas/trustery-report/blob/master/Report.pdf)
+This project is a result of my [undergraduate thesis](https://github.com/musalbas/trustery-report/blob/master/Report.pdf).
 
 ## Command-line options
 <pre>Usage: trustery [OPTIONS] COMMAND [ARGS]...

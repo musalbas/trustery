@@ -4,9 +4,6 @@ import os
 
 from appdirs import user_config_dir
 from configobj import ConfigObj
-from Crypto.PublicKey import RSA
-
-from trustery import rsakeys
 
 # Create configuration directory in case it does not exist.
 try:
@@ -24,12 +21,6 @@ config = ConfigObj(configfile)
 # Initialise configuration.
 if 'truststore' not in config:
     config['truststore'] = {}
-if 'rsa_keys' not in config:
-    config['rsa_keys'] = {}
-if 'rsa_blinded_keys' not in config:
-    config['rsa_blinded_keys'] = {}
-if 'rsa_unblinded_keys' not in config:
-    config['rsa_unblinded_keys'] = {}
 
 
 def trust(address):
@@ -62,70 +53,3 @@ def is_trusted(address):
 def get_trusted():
     """Return a list of trusted Ethereum addresses."""
     return config['truststore'].keys()
-
-
-def add_rsa_key(privkey):
-    """
-    Add an RSA key to the configuration.
-
-    privkey: an RSA key object containing a private key.
-
-    Returns the fingerprint of the key.
-    """
-    fingerprint = rsakeys.get_fingerprint(privkey)
-    config['rsa_keys'][fingerprint] = privkey.exportKey()
-    return fingerprint
-
-
-def load_rsa_key(fingerprint):
-    """
-    Load a stored RSA key.
-
-    keyid: the fingerprint of the key.
-
-    Returns an RSA key object.
-    """
-    return RSA.importKey(config['rsa_keys'][fingerprint])
-
-
-def get_rsa_fingerprints():
-    """Return a list of fingerprints of stored RSA keys."""
-    return config['rsa_keys'].keys()
-
-
-def add_rsa_blinded_key_data(key, blindedkey, r):
-    """
-    Store RSA blinded key data.
-
-    key: the key object.
-    blindedkey: the data representing the blinded key.
-    r: the blinding factor.
-    """
-    blindedkey = blindedkey.replace('=', '-')
-    config['rsa_blinded_keys'][blindedkey] = r
-    config['rsa_unblinded_keys'][blindedkey] = rsakeys.get_fingerprint(key)
-
-
-def get_rsa_blinding_factor(blindedkey):
-    """
-    Get a blinded key's blinding factor.
-
-    blindedkey: the data representing the blinded key.
-
-    Returns the blinding factor.
-    """
-    blindedkey = blindedkey.replace('=', '-')
-    return int(config['rsa_blinded_keys'][blindedkey])
-
-
-def get_rsa_unblinded_key(blindedkey):
-    """
-    Get the unblinded RSA key from the blinded key.
-
-    blindedkey: the data representing the blinded key.
-
-    Returns the RSA key object.
-    """
-    blindedkey = blindedkey.replace('=', '-')
-    fingerprint = config['rsa_unblinded_keys'][blindedkey]
-    return load_rsa_key(fingerprint)

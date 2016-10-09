@@ -54,7 +54,7 @@ class Events(object):
         # Prepent the event type to the topics.
         topics = [event_topic] + topics
         # Encode topics to be sent to the Ethereum client.
-        topics = [encode_api_data(topic, padding=32) for topic in topics]
+        topics = [encode_api_data(topic) for topic in topics]
 
         # Get logs from Ethereum client.
         logs = ethclient.get_logs(
@@ -86,45 +86,6 @@ class Events(object):
         """
         return self._get_logs([attributeID, owner, identifier], event_name='AttributeAdded')
 
-    def filter_blinded_attributes(self, blindedAttributeID=None, owner=None):
-        """
-        Filter and retrieve blinded attributes.
-
-        attributeID: the ID of the attribute.
-        owner: the Ethereum address that owns the attributes.
-        """
-        return self._get_logs([blindedAttributeID, owner], event_name='BlindedAttributeAdded')
-
-    def retrieve_blinded_attribute(self, blindedAttributeID=None):
-        """
-        Retrieve a blinded key attribute, downloading off-blockchain data if necessary.
-
-        blindedAttributeID: the ID of the blinded attribute.
-        """
-        attribute = self.filter_blinded_attributes(blindedAttributeID)[0]
-
-        # Download IPFS data if necessary.
-        if attribute['data'].startswith('ipfs-block://'):
-            ipfs_key = attribute['data'][len('ipfs-block://'):]
-            attribute['data'] = ipfsclient.block_get(ipfs_key)
-
-        return attribute
-
-    def retrieve_blind_signature(self, blindedSignatureID=None):
-        """
-        Retrieve a blinded signature, downloading off-blockchain data if necessary.
-
-        blindedSignatureID: the ID of the blinded signature.
-        """
-        signature = self.filter_blind_signatures(blindedSignatureID)[0]
-
-        # Download IPFS data if necessary.
-        if signature['data'].startswith('ipfs-block://'):
-            ipfs_key = signature['data'][len('ipfs-block://'):]
-            signature['data'] = ipfsclient.block_get(ipfs_key)
-
-        return signature
-
     def filter_signatures(self, signatureID=None, signer=None, attributeID=None):
         """
         Filter and retrieve signatures.
@@ -134,16 +95,6 @@ class Events(object):
         attributeID: the ID of the attribute.
         """
         return self._get_logs([signatureID, signer, attributeID], event_name='AttributeSigned')
-
-    def filter_blind_signatures(self, blindSignatureID=None, signer=None, blindedAttributeID=None):
-        """
-        Filter and retrieve blind signatures.
-
-        blindSignatureID: the ID of the blind signature.
-        signer: the Ethereum address that owns the signature.
-        attributeID: the ID of the attribute.
-        """
-        return self._get_logs([blindSignatureID, signer, blindedAttributeID], event_name='AttributeBlindSigned')
 
     def filter_revocations(self, revocationID=None, signatureID=None):
         """
